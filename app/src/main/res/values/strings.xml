@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">+Digital</string>
+
+    <!-- Splash -->
+    <string name="splash_titulo">+Digital</string>
+    <string name="splash_subtitulo">Aprenda a usar seu celular</string>
+
+    <!-- Menu de Apps -->
+    <string name="menu_titulo">O que você quer aprender?</string>
+    <string name="menu_em_breve">Em breve</string>
+
+    <!-- Genéricos -->
+    <string name="botao_continuar">Continuar</string>
+    <string name="botao_comecar">Começar aula</string>
+    <string name="botao_voltar">Voltar</string>
+    <string name="botao_repetir">Fazer novamente</string>
+    <string name="botao_proxima_aula">Próxima aula</string>
+    <string name="botao_voltar_aulas">Voltar para as aulas</string>
+
+    <!-- Tela de Parabéns -->
+    <string name="parabens_titulo">Parabéns!</string>
+    <string name="parabens_mensagem">Você concluiu esta aula.</string>
+
+    <!-- Mensagens de erro amigáveis (sorteadas durante o tutorial) -->
+    <string-array name="mensagens_erro_amigaveis">
+        <item>Quase! Toque na área destacada.</item>
+        <item>Você está perto. Siga a marcação na tela.</item>
+        <item>Tente tocar no botão indicado.</item>
+        <item>Olhe a área em destaque e tente novamente.</item>
+    </string-array>
+
+    <!-- Aviso de simulação educativa -->
+    <string name="aviso_simulacao_titulo">Esta é uma simulação</string>
+    <string name="aviso_simulacao_mensagem">Você não envia mensagens reais aqui. É um espaço seguro para aprender.</string>
+    <string name="aviso_simulacao_entendi">Entendi</string>
+</resources>
