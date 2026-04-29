@@ -122,4 +122,15 @@ class TutorialEngine(
             concluida = false
         )
     }
+
+    /**
+     * Limpa a mensagem de erro atual sem alterar o passo.
+     * Chamado pelo ViewModel após um timeout ou quando o usuário acerta.
+     */
+    fun limparErro() {
+        val state = _state.value ?: return
+        if (state.erro != null) {
+            _state.value = state.copy(erro = null)
+        }
+    }
 }

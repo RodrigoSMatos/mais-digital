@@ -72,6 +72,7 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.compose.runtime)
 
     // Testes unitários (JVM)
     testImplementation(libs.junit)
