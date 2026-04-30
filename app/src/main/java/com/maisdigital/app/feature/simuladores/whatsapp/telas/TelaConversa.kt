@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -36,6 +38,7 @@ import com.maisdigital.app.core.ui.theme.VerdeWhatsAppClaro
 import com.maisdigital.app.core.ui.theme.VerdeWhatsAppHeader
 import com.maisdigital.app.domain.tutorial.alvoTutorial
 
+
 /**
  * Tela de conversa aberta com a Maria.
  *
@@ -58,44 +61,55 @@ fun TelaConversa(
             .background(FundoChatWhatsApp)
     ) {
         // Header com avatar + nome + ícone de vídeo
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        // Column externa aplica statusBars padding pra empurrar o conteúdo
+        // pra baixo da barra de status, sem deixar barra branca em cima.
+
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
                 .background(VerdeWhatsAppHeader)
-                .padding(horizontal = Dimensoes.espacoMedio)
+                .windowInsetsPadding(androidx.compose.foundation.layout.WindowInsets.statusBars)
         ) {
-            Box(
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFFE91E63)),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .padding(horizontal = Dimensoes.espacoMedio)
             ) {
-                Text("M", color = Color.White,
-                    style = MaterialTheme.typography.titleMedium)
-            }
-            Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
-            Text(
-                text = "Maria",
-                style = MaterialTheme.typography.titleLarge,
-                color = Color.White,
-                modifier = Modifier.weight(1f)
-            )
-            // Ícone de chamada de vídeo
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(48.dp)
-                    .alvoTutorial("btn_chamada_video")
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Videocam,
-                    contentDescription = "Chamada de vídeo",
-                    tint = Color.White,
-                    modifier = Modifier.size(28.dp)
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFFE91E63)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        "M", color = Color.White,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
+                Text(
+                    text = "Maria",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = Color.White,
+                    modifier = Modifier.weight(1f)
                 )
+                // Ícone de chamada de vídeo
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .alvoTutorial("btn_chamada_video")
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Videocam,
+                        contentDescription = "Chamada de vídeo",
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
             }
         }
 
