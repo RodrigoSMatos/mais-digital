@@ -1,7 +1,8 @@
 package com.maisdigital.app.feature.tutorial
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,11 +11,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maisdigital.app.core.ui.components.shakeEm
 import com.maisdigital.app.domain.tutorial.LocalRegistroAlvos
@@ -28,11 +29,18 @@ import com.maisdigital.app.feature.tutorial.components.SpotlightOverlay
  * Tela hospedeira do Tutorial Guiado.
  *
  * Estrutura em camadas (de baixo pra cima):
- *  1. Simulador (ex: SimuladorWhatsApp) — telas com Modifier.alvoTutorial.
- *  2. Captura de cliques fora dos alvos (gera erro amigável).
- *  3. Spotlight escurecendo o resto da tela.
+ *  1. Simulador — Modifier.alvoTutorial intercepta cliques nos elementos certos.
+ *  2. Camada de "clique fora" — recebe cliques no fundo (NÃO sobre o simulador).
+ *  3. Spotlight escurecendo o resto da tela (sem interceptar cliques).
  *  4. Cartão de instrução flutuante.
- *  5. Mensagem de erro amigável (quando há).
+ *  5. Mensagem de erro amigável.
+ *
+ * IMPORTANTE: as camadas 3, 4 e 5 NÃO interceptam cliques porque os Composables
+ * por padrão só consomem cliques se tiverem Modifier.clickable. O simulador
+ * recebe os cliques nos elementos marcados (via Modifier.alvoTutorial).
+ *
+ * Cliques fora dos alvos: capturados pela camada 2, que envolve o simulador
+ * com clickable padrão (sem indication) e despacha "aoClicarFora()".
  */
 @Composable
 fun TutorialScreen(
@@ -59,6 +67,9 @@ fun TutorialScreen(
 
     val alvoRectAtual = state?.elementoAlvoId?.let { alvos[it] }
 
+    // InteractionSource compartilhado para o "clickable fora"
+    val interactionFora = remember { MutableInteractionSource() }
+
     CompositionLocalProvider(
         LocalTutorialEngine provides viewModel.engine,
         LocalRegistroAlvos provides viewModel.registro
@@ -68,40 +79,28 @@ fun TutorialScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            // Camada 1: Simulador (varia conforme o app)
+            // CAMADA 1+2 COMBINADAS: Simulador envolto em clickable.
+            // O Modifier.clickable do simulador captura cliques que NÃO
+            // foram consumidos pelos elementos alvo internos.
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .shakeEm(shakeTrigger)
+                    .clickable(
+                        interactionSource = interactionFora,
+                        indication = null
+                    ) {
+                        viewModel.engine.aoClicarFora()
+                    }
             ) {
                 SimuladorWhatsApp(appId = appId, aulaId = aulaId)
             }
 
-            // Camada 2: Captura cliques fora dos alvos.
-            // Importante: vem ANTES do overlay para que cliques nos elementos
-            // (que ficam abaixo) ainda passem.
-            //
-            // Truque: usamos pointerInput com awaitPointerEventScope no detectTapGestures
-            // só pra registrar tap genérico. O Modifier.alvoTutorial nos elementos abaixo
-            // consome o tap em cima deles ANTES desta camada (graças ao Modifier.clickable lá).
-            //
-            // Quando o tap chega aqui, é porque NENHUM alvo foi atingido.
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .pointerInput(state?.indicePasso) {
-                        detectTapGestures(
-                            onTap = {
-                                viewModel.engine.aoClicarFora()
-                            }
-                        )
-                    }
-            )
-
-            // Camada 3: Spotlight overlay
+            // CAMADA 3: Spotlight overlay (NÃO intercepta cliques pois Canvas
+            // sem clickable é "transparente" ao toque).
             SpotlightOverlay(alvoRect = alvoRectAtual)
 
-            // Camada 4: Cartão de instrução
+            // CAMADA 4: Cartão de instrução
             state?.let { s ->
                 CartaoInstrucao(
                     instrucao = s.instrucaoAtual,
@@ -112,7 +111,7 @@ fun TutorialScreen(
                 )
             }
 
-            // Camada 5: Mensagem de erro amigável (alinhada ao bottom)
+            // CAMADA 5: Mensagem de erro amigável
             Column(
                 verticalArrangement = Arrangement.Bottom,
                 modifier = Modifier

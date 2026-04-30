@@ -35,9 +35,9 @@ import com.maisdigital.app.core.ui.theme.Dimensoes
  * Cartão flutuante que mostra a instrução do passo atual.
  *
  * Posicionamento inteligente:
- *  - Por padrão fica abaixo do elemento alvo.
- *  - Se não houver espaço embaixo, fica acima.
- *  - Se não houver alvo (transição), fica centralizado.
+ *  - Por padrão fica na parte superior da tela.
+ *  - Se o alvo está na parte superior, o cartão vai para a parte inferior.
+ *  - Garante que NUNCA fica em cima do alvo.
  */
 @Composable
 fun CartaoInstrucao(
@@ -51,24 +51,24 @@ fun CartaoInstrucao(
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val density = LocalDensity.current
         val alturaTelaDp = maxHeight
-        val alturaCartaoEstimadaPx = with(density) { 180.dp.toPx() }
+        val alturaTelaPx = with(density) { alturaTelaDp.toPx() }
 
-        // Calcula offset Y do cartão
+        // Calcula offset Y: se alvo está na metade de cima da tela,
+        // cartão fica embaixo; senão, cartão fica em cima.
         val offsetYDp = with(density) {
             if (alvoRect == null) {
-                // Centralizado verticalmente
-                (alturaTelaDp.toPx() / 2f - alturaCartaoEstimadaPx / 2f).toDp()
+                // Sem alvo: cartão fica na parte superior
+                32.dp.toPx().toDp()
             } else {
                 val alvoCentroY = alvoRect.center.y
-                val telaPx = alturaTelaDp.toPx()
-                val alvoFimY = alvoRect.bottom
+                val ehAlvoNaMetadeDeCima = alvoCentroY < alturaTelaPx / 2f
 
-                if (alvoCentroY < telaPx / 2f) {
-                    // Alvo na metade de cima → cartão embaixo do alvo
-                    (alvoFimY + 24.dp.toPx()).toDp()
+                if (ehAlvoNaMetadeDeCima) {
+                    // Alvo em cima → cartão na parte INFERIOR
+                    (alturaTelaPx - 250.dp.toPx() - 32.dp.toPx()).toDp()
                 } else {
-                    // Alvo na metade de baixo → cartão acima do alvo
-                    (alvoRect.top - alturaCartaoEstimadaPx - 24.dp.toPx()).toDp()
+                    // Alvo embaixo → cartão na parte SUPERIOR
+                    32.dp.toPx().toDp()
                 }
             }
         }
