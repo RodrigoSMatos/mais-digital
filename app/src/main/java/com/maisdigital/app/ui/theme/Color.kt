@@ -26,3 +26,5 @@ val PretoOverlay = Color(0xFF000000)          // overlay do tutorial
 val VerdeWhatsAppHeader = Color(0xFF075E54)
 val VerdeWhatsAppClaro = Color(0xFF25D366)
 val VerdeBolhaMensagem = Color(0xFFDCF8C6)
+val FundoChatWhatsApp = Color(0xFFECE5DD)
+val CinzaIconeChat = Color(0xFF54656F)
