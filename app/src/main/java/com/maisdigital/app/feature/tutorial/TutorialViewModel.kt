@@ -1,7 +1,9 @@
 package com.maisdigital.app.feature.tutorial
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.maisdigital.app.MaisDigitalApp
 import com.maisdigital.app.data.catalog.CatalogoApps
 import com.maisdigital.app.data.catalog.CatalogoAulasWhatsApp
 import com.maisdigital.app.domain.model.Aula
@@ -16,13 +18,10 @@ import kotlinx.coroutines.launch
 /**
  * ViewModel da tela de Tutorial.
  *
- * Responsabilidades:
- *  - Carregar a Aula a partir do appId/aulaId.
- *  - Manter instâncias do TutorialEngine e do RegistroAlvos.
- *  - Auto-limpar mensagens de erro após 2.5s.
- *  - Disparar trigger de shake para a tela animar.
+ * Diferente do anterior: agora é AndroidViewModel pra ter acesso ao Application,
+ * de onde pega os repositórios. Quando a aula é concluída, marca no DataStore.
  */
-class TutorialViewModel : ViewModel() {
+class TutorialViewModel(application: Application) : AndroidViewModel(application) {
 
     val engine = TutorialEngine()
     val registro = RegistroAlvos()
@@ -30,7 +29,13 @@ class TutorialViewModel : ViewModel() {
     private val _shakeTrigger = MutableStateFlow(0)
     val shakeTrigger: StateFlow<Int> = _shakeTrigger.asStateFlow()
 
+    private val progressoRepository = (application as MaisDigitalApp).progressoRepository
+
     private var aulaCarregada: Aula? = null
+
+    init {
+        observarEstado()
+    }
 
     fun carregarAula(appId: String, aulaId: String) {
         if (aulaCarregada?.id == aulaId) return
@@ -42,38 +47,47 @@ class TutorialViewModel : ViewModel() {
 
         aulaCarregada = aula
         engine.iniciar(aula)
+    }
 
-        // Observa o engine para reagir a erros (shake + auto-limpar)
+    fun reiniciar() {
+        aulaCarregada?.let { engine.iniciar(it) }
+    }
+
+    /**
+     * Observa o engine para:
+     *  - disparar shake quando há erro novo;
+     *  - auto-limpar mensagens de erro após 2.5s;
+     *  - salvar conclusão da aula no DataStore.
+     */
+    private fun observarEstado() {
         viewModelScope.launch {
             var ultimaMensagemErro: String? = null
+            var aulaJaSalva: String? = null
+
             engine.state.collect { state ->
                 if (state == null) return@collect
+
+                // Erros
                 val erro = state.erro
                 if (erro != null && erro != ultimaMensagemErro) {
                     ultimaMensagemErro = erro
                     _shakeTrigger.value = _shakeTrigger.value + 1
-                    // Auto-limpa após 2.5s
                     launch {
                         delay(2500)
                         if (engine.state.value?.erro == erro) {
-                            // Reemite estado sem erro
-                            limparErro()
+                            engine.limparErro()
                         }
                     }
                 } else if (erro == null) {
                     ultimaMensagemErro = null
                 }
+
+                // Conclusão — salva uma única vez
+                if (state.concluida && aulaJaSalva != state.aula.id) {
+                    aulaJaSalva = state.aula.id
+                    progressoRepository.marcarConcluida(state.aula.id)
+                }
             }
         }
-    }
-
-    private fun limparErro() {
-        // Hack simples: clica num id inexistente NÃO funcionaria (geraria erro de novo).
-        // Em vez disso, expomos um método no engine. Vamos adicionar.
-        engine.limparErro()
-    }
-
-    fun reiniciar() {
-        aulaCarregada?.let { engine.iniciar(it) }
     }
 }

@@ -11,7 +11,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maisdigital.app.core.ui.components.BarraTopo
 import com.maisdigital.app.core.ui.theme.Dimensoes
 import com.maisdigital.app.data.catalog.CatalogoApps
@@ -19,15 +22,14 @@ import com.maisdigital.app.data.catalog.CatalogoAulasWhatsApp
 
 /**
  * Lista as aulas disponíveis para um app.
- *
- * No MVP, somente o WhatsApp tem aulas.
- * Por enquanto a lista de aulas concluídas é vazia — Etapa 6 conecta com DataStore.
+ * Marca com ✓ verde as aulas já concluídas (vindo do DataStore).
  */
 @Composable
 fun ListaAulasScreen(
     appId: String,
     aoVoltar: () -> Unit,
-    aoSelecionarAula: (String) -> Unit
+    aoSelecionarAula: (String) -> Unit,
+    viewModel: ListaAulasViewModel = viewModel()
 ) {
     val app = CatalogoApps.buscarPorId(appId)
     val aulas = when (appId) {
@@ -35,8 +37,7 @@ fun ListaAulasScreen(
         else -> emptyList()
     }
 
-    // Por enquanto vazio — será preenchido na Etapa 6.
-    val aulasConcluidas: Set<String> = emptySet()
+    val aulasConcluidas by viewModel.aulasConcluidas.collectAsState()
 
     Scaffold(
         topBar = {
