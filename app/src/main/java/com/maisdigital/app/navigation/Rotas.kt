@@ -35,4 +35,6 @@ sealed class Rotas(val rota: String) {
         const val ARG_APP_ID = "appId"
         const val ARG_AULA_ID = "aulaId"
     }
+
+    data object Configuracoes : Rotas("configuracoes")
 }

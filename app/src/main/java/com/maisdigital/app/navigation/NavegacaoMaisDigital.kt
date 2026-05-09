@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.maisdigital.app.feature.configuracoes.ConfiguracoesScreen
 import com.maisdigital.app.feature.introaula.IntroAulaScreen
 import com.maisdigital.app.feature.listaaulas.ListaAulasScreen
 import com.maisdigital.app.feature.menuapps.MenuAppsScreen
@@ -40,6 +41,9 @@ fun NavegacaoMaisDigital() {
             MenuAppsScreen(
                 aoSelecionarApp = { appId ->
                     navController.navigate(Rotas.ListaAulas.criar(appId))
+                },
+                aoAbrirConfiguracoes = {
+                    navController.navigate(Rotas.Configuracoes.rota)
                 }
             )
         }
@@ -129,5 +133,12 @@ fun NavegacaoMaisDigital() {
                 }
             )
         }
+
+        composable(Rotas.Configuracoes.rota) {
+            ConfiguracoesScreen(
+                aoVoltar = { navController.popBackStack() }
+            )
+        }
+
     }
 }

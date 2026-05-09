@@ -20,10 +20,6 @@ import com.maisdigital.app.core.ui.theme.Dimensoes
 import com.maisdigital.app.data.catalog.CatalogoApps
 import com.maisdigital.app.data.catalog.CatalogoAulasWhatsApp
 
-/**
- * Lista as aulas disponíveis para um app.
- * Marca com ✓ verde as aulas já concluídas (vindo do DataStore).
- */
 @Composable
 fun ListaAulasScreen(
     appId: String,
@@ -38,6 +34,13 @@ fun ListaAulasScreen(
     }
 
     val aulasConcluidas by viewModel.aulasConcluidas.collectAsState()
+    val avisoVisto by viewModel.avisoSimulacaoVisto.collectAsState()
+
+    if (!avisoVisto && appId == CatalogoApps.ID_WHATSAPP) {
+        DialogAvisoSimulacao(
+            aoConfirmar = { viewModel.marcarAvisoVisto() }
+        )
+    }
 
     Scaffold(
         topBar = {

@@ -1,7 +1,6 @@
 package com.maisdigital.app.core.ui.theme
 
 import android.app.Activity
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -9,6 +8,8 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.maisdigital.app.core.accessibility.aplicarMultiplicadorFonte
+import com.maisdigital.app.domain.model.TamanhoTexto
 
 private val EsquemaCoresClaro = lightColorScheme(
     primary = AzulPrincipal,
@@ -39,14 +40,12 @@ private val EsquemaCoresClaro = lightColorScheme(
 
 @Composable
 fun MaisDigitalTheme(
-    // Por enquanto, sempre tema claro. Idosos preferem.
-    // Dark theme pode vir em versão futura.
     darkTheme: Boolean = false,
+    tamanhoTexto: TamanhoTexto = TamanhoTexto.PADRAO,
     content: @Composable () -> Unit
 ) {
     val esquemaCores = EsquemaCoresClaro
 
-    // Pinta a status bar com a cor primária
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -57,9 +56,15 @@ fun MaisDigitalTheme(
         }
     }
 
+    // Aplica primeiro o theme base, depois sobrescreve a tipografia escalada.
     MaterialTheme(
         colorScheme = esquemaCores,
-        typography = TipografiaMaisDigital,
-        content = content
-    )
+        typography = TipografiaMaisDigital
+    ) {
+        MaterialTheme(
+            colorScheme = esquemaCores,
+            typography = aplicarMultiplicadorFonte(tamanhoTexto),
+            content = content
+        )
+    }
 }
