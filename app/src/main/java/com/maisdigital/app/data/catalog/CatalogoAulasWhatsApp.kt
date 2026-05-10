@@ -4,10 +4,12 @@ import com.maisdigital.app.domain.model.Aula
 import com.maisdigital.app.domain.model.Passo
 
 /**
- * As 5 aulas do módulo WhatsApp.
+ * As 8 aulas do módulo WhatsApp.
  *
- * Cada elementoAlvoId deve corresponder exatamente ao id usado
- * em Modifier.alvoTutorial(id = "...") nas telas do simulador.
+ * Estrutura pedagógica:
+ *   1-3: Funções básicas (contatos, mensagem, áudio)
+ *   4-7: Chamada de vídeo em profundidade (tela, câmera, áudio, layout)
+ *   8:   Recursos avançados (menu e compartilhamento de tela)
  */
 object CatalogoAulasWhatsApp {
 
@@ -19,15 +21,12 @@ object CatalogoAulasWhatsApp {
     const val ID_AULA_6 = "wpp_aula_6"
     const val ID_AULA_7 = "wpp_aula_7"
     const val ID_AULA_8 = "wpp_aula_8"
-    const val ID_AULA_9 = "wpp_aula_9"
-    const val ID_AULA_10 = "wpp_aula_10"
-    const val ID_AULA_11 = "wpp_aula_11"
 
     val aulas: List<Aula> = listOf(
 
-        // ------------------------------------------------------------------
-        // Aula 1 — Adicionar contato (FLUXO REAL DO WHATSAPP)
-        // ------------------------------------------------------------------
+        // ==================================================================
+        // AULA 1 — Adicionar um contato
+        // ==================================================================
         Aula(
             id = ID_AULA_1,
             appId = CatalogoApps.ID_WHATSAPP,
@@ -64,9 +63,9 @@ object CatalogoAulasWhatsApp {
             )
         ),
 
-        // ------------------------------------------------------------------
-        // Aula 2 — Enviar mensagem
-        // ------------------------------------------------------------------
+        // ==================================================================
+        // AULA 2 — Enviar uma mensagem
+        // ==================================================================
         Aula(
             id = ID_AULA_2,
             appId = CatalogoApps.ID_WHATSAPP,
@@ -93,9 +92,9 @@ object CatalogoAulasWhatsApp {
             )
         ),
 
-        // ------------------------------------------------------------------
-        // Aula 3 — Enviar áudio
-        // ------------------------------------------------------------------
+        // ==================================================================
+        // AULA 3 — Enviar um áudio
+        // ==================================================================
         Aula(
             id = ID_AULA_3,
             appId = CatalogoApps.ID_WHATSAPP,
@@ -122,74 +121,109 @@ object CatalogoAulasWhatsApp {
             )
         ),
 
-        // ------------------------------------------------------------------
-        // Aula 4 — Iniciar chamada de vídeo (versão atualizada)
-        // ------------------------------------------------------------------
+        // ==================================================================
+        // AULA 4 — Conhecendo a chamada de vídeo
+        // ==================================================================
         Aula(
             id = ID_AULA_4,
             appId = CatalogoApps.ID_WHATSAPP,
             ordem = 4,
-            titulo = "Fazer uma chamada de vídeo",
-            descricao = "Nesta aula você vai aprender a iniciar " +
-                    "uma chamada de vídeo com alguém.",
+            titulo = "Conhecendo a chamada de vídeo",
+            descricao = "Nesta aula você vai aprender a iniciar uma chamada " +
+                    "e a reconhecer cada parte da tela.",
             passos = listOf(
                 Passo(
                     id = "wpp4_p1",
-                    instrucao = "Toque na conversa da Maria para abri-la.",
+                    instrucao = "Toque na conversa da Maria para começar.",
                     elementoAlvoId = "conversa_maria"
                 ),
                 Passo(
                     id = "wpp4_p2",
-                    instrucao = "Toque no ícone de câmera no canto superior direito para iniciar a chamada.",
+                    instrucao = "Toque no botão de câmera para iniciar a chamada.",
                     elementoAlvoId = "btn_chamada_video"
                 ),
                 Passo(
                     id = "wpp4_p3",
-                    instrucao = "A chamada começou! Toque no botão vermelho para encerrar.",
+                    instrucao = "Aqui aparece o nome da pessoa com quem você está falando. Toque para continuar.",
+                    elementoAlvoId = "info_pessoa_chamada"
+                ),
+                Passo(
+                    id = "wpp4_p4",
+                    instrucao = "A imagem grande mostra a outra pessoa. Toque para continuar.",
+                    elementoAlvoId = "area_principal_chamada"
+                ),
+                Passo(
+                    id = "wpp4_p5",
+                    instrucao = "A imagem pequena no canto mostra como você aparece. Toque para continuar.",
+                    elementoAlvoId = "miniatura_propria_camera"
+                ),
+                Passo(
+                    id = "wpp4_p6",
+                    instrucao = "Pronto! Agora toque no botão vermelho para encerrar a chamada.",
                     elementoAlvoId = "btn_encerrar_chamada"
                 )
             )
         ),
 
-        // ------------------------------------------------------------------
-        // Aula 5 — Inverter câmera (versão atualizada)
-        // ------------------------------------------------------------------
+        // ==================================================================
+        // AULA 5 — Controlar a câmera
+        // ==================================================================
         Aula(
             id = ID_AULA_5,
             appId = CatalogoApps.ID_WHATSAPP,
             ordem = 5,
-            titulo = "Inverter a câmera",
-            descricao = "Nesta aula você vai aprender a trocar entre " +
-                    "a câmera frontal e a traseira durante uma chamada de vídeo.",
+            titulo = "Controlar sua câmera",
+            descricao = "Nesta aula você vai aprender a desligar e ligar sua câmera, " +
+                    "e a trocar entre a câmera da frente e a de trás.",
             passos = listOf(
                 Passo(
                     id = "wpp5_p1",
-                    instrucao = "Toque na conversa da Maria para abri-la.",
+                    instrucao = "Toque na conversa da Maria para começar.",
                     elementoAlvoId = "conversa_maria"
                 ),
                 Passo(
                     id = "wpp5_p2",
-                    instrucao = "Toque no ícone de câmera para iniciar a chamada de vídeo.",
+                    instrucao = "Toque no botão de câmera para iniciar a chamada.",
                     elementoAlvoId = "btn_chamada_video"
                 ),
                 Passo(
                     id = "wpp5_p3",
-                    instrucao = "Agora toque no botão de inverter câmera.",
+                    instrucao = "Toque no botão de câmera para desligar sua câmera.",
+                    elementoAlvoId = "btn_camera_chamada"
+                ),
+                Passo(
+                    id = "wpp5_p4",
+                    instrucao = "Pronto! Sua câmera foi desligada. Toque de novo para ligar.",
+                    elementoAlvoId = "btn_camera_chamada"
+                ),
+                Passo(
+                    id = "wpp5_p5",
+                    instrucao = "Agora toque no botão de inverter câmera para usar a câmera de trás.",
                     elementoAlvoId = "btn_inverter_camera"
+                ),
+                Passo(
+                    id = "wpp5_p6",
+                    instrucao = "Toque novamente para voltar para a câmera da frente.",
+                    elementoAlvoId = "btn_inverter_camera"
+                ),
+                Passo(
+                    id = "wpp5_p7",
+                    instrucao = "Pronto! Toque no botão vermelho para encerrar.",
+                    elementoAlvoId = "btn_encerrar_chamada"
                 )
             )
         ),
 
         // ==================================================================
-        // AULA 6 — Conhecendo a tela da chamada de vídeo
+        // AULA 6 — Controlar microfone e som
         // ==================================================================
         Aula(
             id = ID_AULA_6,
             appId = CatalogoApps.ID_WHATSAPP,
             ordem = 6,
-            titulo = "Conhecendo a chamada de vídeo",
-            descricao = "Nesta aula você vai aprender a reconhecer cada parte " +
-                    "da tela quando estiver em uma chamada de vídeo.",
+            titulo = "Controlar o microfone e o som",
+            descricao = "Nesta aula você vai aprender a silenciar seu microfone " +
+                    "e a ativar o viva voz.",
             passos = listOf(
                 Passo(
                     id = "wpp6_p1",
@@ -203,37 +237,37 @@ object CatalogoAulasWhatsApp {
                 ),
                 Passo(
                     id = "wpp6_p3",
-                    instrucao = "Aqui aparece o nome da pessoa com quem você está falando. Toque para continuar.",
-                    elementoAlvoId = "info_pessoa_chamada"
+                    instrucao = "Toque no botão de microfone para silenciar.",
+                    elementoAlvoId = "btn_microfone_chamada"
                 ),
                 Passo(
                     id = "wpp6_p4",
-                    instrucao = "A imagem grande mostra a outra pessoa. Toque para continuar.",
-                    elementoAlvoId = "area_principal_chamada"
+                    instrucao = "Pronto! Agora a outra pessoa não ouve você. Toque de novo para falar.",
+                    elementoAlvoId = "btn_microfone_chamada"
                 ),
                 Passo(
                     id = "wpp6_p5",
-                    instrucao = "A imagem pequena no canto mostra como você aparece. Toque para continuar.",
-                    elementoAlvoId = "miniatura_propria_camera"
+                    instrucao = "Toque no botão de alto-falante para ativar o viva voz.",
+                    elementoAlvoId = "btn_alto_falante"
                 ),
                 Passo(
                     id = "wpp6_p6",
-                    instrucao = "Pronto! Agora toque no botão vermelho para encerrar a chamada.",
+                    instrucao = "O som agora sai no alto-falante do celular. Toque para encerrar.",
                     elementoAlvoId = "btn_encerrar_chamada"
                 )
             )
         ),
 
         // ==================================================================
-        // AULA 7 — Ligar, desligar e inverter a câmera
+        // AULA 7 — Expandir a imagem
         // ==================================================================
         Aula(
             id = ID_AULA_7,
             appId = CatalogoApps.ID_WHATSAPP,
             ordem = 7,
-            titulo = "Controlar sua câmera",
-            descricao = "Nesta aula você vai aprender a desligar e ligar sua câmera, " +
-                    "e a trocar entre a câmera da frente e a de trás.",
+            titulo = "Expandir a imagem da chamada",
+            descricao = "Nesta aula você vai aprender a alternar entre ver " +
+                    "a outra pessoa em grande e ver você mesmo em grande.",
             passos = listOf(
                 Passo(
                     id = "wpp7_p1",
@@ -247,26 +281,16 @@ object CatalogoAulasWhatsApp {
                 ),
                 Passo(
                     id = "wpp7_p3",
-                    instrucao = "Toque no botão de câmera para desligar sua câmera.",
-                    elementoAlvoId = "btn_camera_chamada"
+                    instrucao = "Toque na sua imagem pequena no canto para expandir.",
+                    elementoAlvoId = "miniatura_propria_camera"
                 ),
                 Passo(
                     id = "wpp7_p4",
-                    instrucao = "Pronto! Sua câmera foi desligada. Toque de novo para ligar.",
-                    elementoAlvoId = "btn_camera_chamada"
+                    instrucao = "Agora você aparece em tamanho grande. Toque na imagem pequena para voltar.",
+                    elementoAlvoId = "miniatura_outra_pessoa"
                 ),
                 Passo(
                     id = "wpp7_p5",
-                    instrucao = "Agora toque no botão de inverter câmera para usar a câmera de trás.",
-                    elementoAlvoId = "btn_inverter_camera"
-                ),
-                Passo(
-                    id = "wpp7_p6",
-                    instrucao = "Toque novamente para voltar para a câmera da frente.",
-                    elementoAlvoId = "btn_inverter_camera"
-                ),
-                Passo(
-                    id = "wpp7_p7",
                     instrucao = "Pronto! Toque no botão vermelho para encerrar.",
                     elementoAlvoId = "btn_encerrar_chamada"
                 )
@@ -274,15 +298,15 @@ object CatalogoAulasWhatsApp {
         ),
 
         // ==================================================================
-        // AULA 8 — Microfone e som
+        // AULA 8 — Menu de opções e compartilhar tela
         // ==================================================================
         Aula(
             id = ID_AULA_8,
             appId = CatalogoApps.ID_WHATSAPP,
             ordem = 8,
-            titulo = "Controlar o microfone e o som",
-            descricao = "Nesta aula você vai aprender a silenciar seu microfone " +
-                    "e a ativar o viva voz.",
+            titulo = "Menu e compartilhar tela",
+            descricao = "Nesta aula você vai conhecer o menu de opções extras " +
+                    "e aprender a compartilhar sua tela com a outra pessoa.",
             passos = listOf(
                 Passo(
                     id = "wpp8_p1",
@@ -296,149 +320,26 @@ object CatalogoAulasWhatsApp {
                 ),
                 Passo(
                     id = "wpp8_p3",
-                    instrucao = "Toque no botão de microfone para silenciar.",
-                    elementoAlvoId = "btn_microfone_chamada"
+                    instrucao = "Toque nos três pontinhos para abrir o menu de opções.",
+                    elementoAlvoId = "btn_tres_pontinhos"
                 ),
                 Passo(
                     id = "wpp8_p4",
-                    instrucao = "Pronto! Agora a outra pessoa não ouve você. Toque de novo para falar.",
-                    elementoAlvoId = "btn_microfone_chamada"
+                    instrucao = "Aqui ficam opções extras. Toque em 'Compartilhar tela'.",
+                    elementoAlvoId = "opcao_compartilhar_tela"
                 ),
                 Passo(
                     id = "wpp8_p5",
-                    instrucao = "Toque no botão de alto-falante para ativar o viva voz.",
-                    elementoAlvoId = "btn_alto_falante"
-                ),
-                Passo(
-                    id = "wpp8_p6",
-                    instrucao = "O som agora sai no alto-falante do celular. Toque para encerrar.",
-                    elementoAlvoId = "btn_encerrar_chamada"
-                )
-            )
-        ),
-
-        // ==================================================================
-        // AULA 9 — Expandindo a imagem
-        // ==================================================================
-        Aula(
-            id = ID_AULA_9,
-            appId = CatalogoApps.ID_WHATSAPP,
-            ordem = 9,
-            titulo = "Expandir a imagem da chamada",
-            descricao = "Nesta aula você vai aprender a alternar entre ver " +
-                    "a outra pessoa em grande e ver você mesmo em grande.",
-            passos = listOf(
-                Passo(
-                    id = "wpp9_p1",
-                    instrucao = "Toque na conversa da Maria para começar.",
-                    elementoAlvoId = "conversa_maria"
-                ),
-                Passo(
-                    id = "wpp9_p2",
-                    instrucao = "Toque no botão de câmera para iniciar a chamada.",
-                    elementoAlvoId = "btn_chamada_video"
-                ),
-                Passo(
-                    id = "wpp9_p3",
-                    instrucao = "Toque na sua imagem pequena no canto para expandir.",
-                    elementoAlvoId = "miniatura_propria_camera"
-                ),
-                Passo(
-                    id = "wpp9_p4",
-                    instrucao = "Agora você aparece em tamanho grande. Toque na imagem pequena para voltar.",
-                    elementoAlvoId = "miniatura_outra_pessoa"
-                ),
-                Passo(
-                    id = "wpp9_p5",
-                    instrucao = "Pronto! Toque no botão vermelho para encerrar.",
-                    elementoAlvoId = "btn_encerrar_chamada"
-                )
-            )
-        ),
-
-        // ==================================================================
-        // AULA 10 — Menu de opções
-        // ==================================================================
-        Aula(
-            id = ID_AULA_10,
-            appId = CatalogoApps.ID_WHATSAPP,
-            ordem = 10,
-            titulo = "Menu de opções da chamada",
-            descricao = "Nesta aula você vai conhecer o menu com opções extras " +
-                    "que aparece quando você toca nos três pontinhos.",
-            passos = listOf(
-                Passo(
-                    id = "wpp10_p1",
-                    instrucao = "Toque na conversa da Maria para começar.",
-                    elementoAlvoId = "conversa_maria"
-                ),
-                Passo(
-                    id = "wpp10_p2",
-                    instrucao = "Toque no botão de câmera para iniciar a chamada.",
-                    elementoAlvoId = "btn_chamada_video"
-                ),
-                Passo(
-                    id = "wpp10_p3",
-                    instrucao = "Toque nos três pontinhos para abrir o menu.",
-                    elementoAlvoId = "btn_tres_pontinhos"
-                ),
-                Passo(
-                    id = "wpp10_p4",
-                    instrucao = "Aqui ficam as opções extras. Toque em uma das opções para conhecer.",
-                    elementoAlvoId = "opcao_compartilhar_tela"
-                ),
-                Passo(
-                    id = "wpp10_p5",
-                    instrucao = "Pronto! Você conheceu o menu. Toque no botão vermelho para encerrar.",
-                    elementoAlvoId = "btn_encerrar_chamada"
-                )
-            )
-        ),
-
-        // ==================================================================
-        // AULA 11 — Compartilhar a tela
-        // ==================================================================
-        Aula(
-            id = ID_AULA_11,
-            appId = CatalogoApps.ID_WHATSAPP,
-            ordem = 11,
-            titulo = "Compartilhar sua tela",
-            descricao = "Nesta aula você vai aprender a mostrar a tela do seu celular " +
-                    "para a outra pessoa durante a chamada.",
-            passos = listOf(
-                Passo(
-                    id = "wpp11_p1",
-                    instrucao = "Toque na conversa da Maria para começar.",
-                    elementoAlvoId = "conversa_maria"
-                ),
-                Passo(
-                    id = "wpp11_p2",
-                    instrucao = "Toque no botão de câmera para iniciar a chamada.",
-                    elementoAlvoId = "btn_chamada_video"
-                ),
-                Passo(
-                    id = "wpp11_p3",
-                    instrucao = "Toque nos três pontinhos para abrir o menu.",
-                    elementoAlvoId = "btn_tres_pontinhos"
-                ),
-                Passo(
-                    id = "wpp11_p4",
-                    instrucao = "Toque em 'Compartilhar tela'.",
-                    elementoAlvoId = "opcao_compartilhar_tela"
-                ),
-                Passo(
-                    id = "wpp11_p5",
-                    instrucao = "O celular vai pedir confirmação. Toque em 'Aceitar'.",
+                    instrucao = "O celular vai pedir confirmação. Toque em 'Aceitar' para compartilhar.",
                     elementoAlvoId = "btn_aceitar_compartilhamento"
                 ),
                 Passo(
-                    id = "wpp11_p6",
+                    id = "wpp8_p6",
                     instrucao = "Pronto! Agora a outra pessoa vê sua tela. Toque no botão vermelho para encerrar.",
                     elementoAlvoId = "btn_encerrar_chamada"
                 )
             )
         )
-
     )
 
     fun buscarPorId(id: String): Aula? = aulas.find { it.id == id }
