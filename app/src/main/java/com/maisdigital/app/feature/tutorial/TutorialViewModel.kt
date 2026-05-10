@@ -15,12 +15,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel da tela de Tutorial.
- *
- * Diferente do anterior: agora é AndroidViewModel pra ter acesso ao Application,
- * de onde pega os repositórios. Quando a aula é concluída, marca no DataStore.
- */
 class TutorialViewModel(application: Application) : AndroidViewModel(application) {
 
     val engine = TutorialEngine()
@@ -28,6 +22,14 @@ class TutorialViewModel(application: Application) : AndroidViewModel(application
 
     private val _shakeTrigger = MutableStateFlow(0)
     val shakeTrigger: StateFlow<Int> = _shakeTrigger.asStateFlow()
+
+    /**
+     * Indica se o tutorial está pronto para receber cliques.
+     * Inicia em false e vira true após um pequeno delay,
+     * evitando que o tap residual de "Começar aula" caia aqui.
+     */
+    private val _aceitaCliques = MutableStateFlow(false)
+    val aceitaCliques: StateFlow<Boolean> = _aceitaCliques.asStateFlow()
 
     private val progressoRepository = (application as MaisDigitalApp).progressoRepository
 
@@ -47,18 +49,26 @@ class TutorialViewModel(application: Application) : AndroidViewModel(application
 
         aulaCarregada = aula
         engine.iniciar(aula)
+
+        // Bloqueia cliques por 500ms para descartar tap residual
+        _aceitaCliques.value = false
+        viewModelScope.launch {
+            delay(800)   // antes era 500
+            _aceitaCliques.value = true
+        }
     }
 
     fun reiniciar() {
-        aulaCarregada?.let { engine.iniciar(it) }
+        aulaCarregada?.let {
+            engine.iniciar(it)
+            _aceitaCliques.value = false
+            viewModelScope.launch {
+                delay(500)
+                _aceitaCliques.value = true
+            }
+        }
     }
 
-    /**
-     * Observa o engine para:
-     *  - disparar shake quando há erro novo;
-     *  - auto-limpar mensagens de erro após 2.5s;
-     *  - salvar conclusão da aula no DataStore.
-     */
     private fun observarEstado() {
         viewModelScope.launch {
             var ultimaMensagemErro: String? = null
@@ -67,7 +77,6 @@ class TutorialViewModel(application: Application) : AndroidViewModel(application
             engine.state.collect { state ->
                 if (state == null) return@collect
 
-                // Erros
                 val erro = state.erro
                 if (erro != null && erro != ultimaMensagemErro) {
                     ultimaMensagemErro = erro
@@ -82,7 +91,6 @@ class TutorialViewModel(application: Application) : AndroidViewModel(application
                     ultimaMensagemErro = null
                 }
 
-                // Conclusão — salva uma única vez
                 if (state.concluida && aulaJaSalva != state.aula.id) {
                     aulaJaSalva = state.aula.id
                     progressoRepository.marcarConcluida(state.aula.id)

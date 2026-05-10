@@ -19,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Chat
-import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Update
@@ -44,6 +43,7 @@ import com.maisdigital.app.domain.tutorial.alvoTutorial
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+
 
 /**
  * Tela inicial do WhatsApp simulado: lista de conversas.
@@ -274,16 +274,16 @@ private fun ItemConversa(
 @Composable
 private fun BarraInferior() {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Top,
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier
             .fillMaxWidth()
             .height(64.dp)
             .background(Color.White)
+            .padding(top = 8.dp)
     ) {
         AbaInferior(icone = Icons.Filled.Chat, texto = "Conversas", selecionado = true)
         AbaInferior(icone = Icons.Filled.Update, texto = "Atualizações")
-        AbaInferior(icone = Icons.Filled.Groups, texto = "Comunidades")
         AbaInferior(icone = Icons.Filled.Call, texto = "Ligações")
     }
 }
@@ -291,13 +291,14 @@ private fun BarraInferior() {
 @Composable
 private fun AbaInferior(icone: ImageVector, texto: String, selecionado: Boolean = false) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        // Pílula com fundo verde claro APENAS na aba selecionada
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .height(28.dp)
-                .padding(horizontal = if (selecionado) 16.dp else 8.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(14.dp))
                 .background(if (selecionado) Color(0xFFD9FDD3) else Color.Transparent)
+                .padding(horizontal = 18.dp, vertical = 4.dp)
         ) {
             Icon(
                 imageVector = icone,
@@ -309,7 +310,7 @@ private fun AbaInferior(icone: ImageVector, texto: String, selecionado: Boolean 
         Spacer(modifier = Modifier.height(2.dp))
         Text(
             text = texto,
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme.typography.bodySmall,
             color = if (selecionado) Color(0xFF075E54) else CinzaIconePequeno
         )
     }
