@@ -8,11 +8,21 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material.icons.filled.AddComment
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Groups
+import androidx.compose.material.icons.filled.PhotoCamera
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Update
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,73 +31,190 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.maisdigital.app.core.ui.theme.CinzaDivisor
+import com.maisdigital.app.core.ui.theme.CinzaIconePequeno
 import com.maisdigital.app.core.ui.theme.Dimensoes
+import com.maisdigital.app.core.ui.theme.FundoBuscaWhatsApp
 import com.maisdigital.app.core.ui.theme.VerdeWhatsAppClaro
+import com.maisdigital.app.core.ui.theme.VerdeWhatsAppFAB
+import com.maisdigital.app.core.ui.theme.VerdeWhatsAppHeader
 import com.maisdigital.app.domain.tutorial.alvoTutorial
-import com.maisdigital.app.feature.simuladores.whatsapp.components.HeaderWhatsApp
-import com.maisdigital.app.feature.simuladores.whatsapp.components.IconeHeader
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 
 /**
  * Tela inicial do WhatsApp simulado: lista de conversas.
  *
+ * Estrutura fiel ao WhatsApp real:
+ *  - Header com título "WhatsApp" + ícones de câmera e menu
+ *  - Barra de busca "Pergunte à Meta AI ou pesquise"
+ *  - Filtros (Todas, Não lidas, Favoritos, Grupos)
+ *  - Lista de conversas
+ *  - FAB verde flutuante no canto inferior direito (alvo: btn_nova_conversa)
+ *  - Barra inferior de navegação (Conversas, Atualizações, Comunidades, Ligações)
+ *
  * Alvos:
- *  - "btn_novo_contato"  → ícone de adicionar pessoa no header
+ *  - "btn_nova_conversa" → FAB verde flutuante (abre tela de Contatos)
  *  - "conversa_maria"    → item da Maria
  */
 @Composable
 fun TelaListaConversas(
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-    ) {
-        HeaderWhatsApp(
-            titulo = "WhatsApp",
-            iconesDireita = {
-                IconeHeader(
-                    icone = Icons.Filled.PersonAdd,
-                    descricao = "Novo contato",
-                    modifier = Modifier.alvoTutorial("btn_novo_contato")
+    Box(modifier = modifier.fillMaxSize().background(Color.White)) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            // Header verde com aplicação de status bar
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(VerdeWhatsAppHeader)
+                    .windowInsetsPaddingStatusBars()
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .padding(horizontal = Dimensoes.espacoMedio)
+                ) {
+                    Text(
+                        text = "WhatsApp",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.White,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Icon(
+                        imageVector = Icons.Filled.PhotoCamera,
+                        contentDescription = "Câmera",
+                        tint = Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+            }
+
+            // Barra de busca cinza
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = Dimensoes.espacoMedio,
+                        vertical = Dimensoes.espacoPequeno
+                    )
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(44.dp)
+                        .clip(RoundedCornerShape(22.dp))
+                        .background(FundoBuscaWhatsApp)
+                        .padding(horizontal = Dimensoes.espacoMedio)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = null,
+                        tint = CinzaIconePequeno,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(Dimensoes.espacoPequeno))
+                    Text(
+                        text = "Pesquise",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = CinzaIconePequeno
+                    )
+                }
+            }
+
+            // Filtros (chips)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Dimensoes.espacoMedio)
+            ) {
+                ChipFiltro(texto = "Todas", selecionado = true)
+                Spacer(modifier = Modifier.width(8.dp))
+                ChipFiltro(texto = "Não lidas")
+                Spacer(modifier = Modifier.width(8.dp))
+                ChipFiltro(texto = "Grupos")
+            }
+
+            Spacer(modifier = Modifier.height(Dimensoes.espacoPequeno))
+
+            // Lista de conversas
+            Column(modifier = Modifier.weight(1f)) {
+                ItemConversa(
+                    inicial = "M",
+                    corAvatar = Color(0xFFE91E63),
+                    nome = "Maria",
+                    ultimaMensagem = "Oi! Tudo bem?",
+                    horario = "10:42",
+                    modifier = Modifier.alvoTutorial("conversa_maria")
+                )
+                ItemConversa(
+                    inicial = "J",
+                    corAvatar = Color(0xFF3F51B5),
+                    nome = "João",
+                    ultimaMensagem = "Bom dia!",
+                    horario = "09:15"
+                )
+                ItemConversa(
+                    inicial = "A",
+                    corAvatar = Color(0xFFFF9800),
+                    nome = "Ana",
+                    ultimaMensagem = "Te ligo mais tarde 😊",
+                    horario = "Ontem"
+                )
+                ItemConversa(
+                    inicial = "P",
+                    corAvatar = Color(0xFF4CAF50),
+                    nome = "Pedro",
+                    ultimaMensagem = "Obrigado!",
+                    horario = "Ontem"
                 )
             }
-        )
 
-        Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
+            // Barra inferior de navegação
+            BarraInferior()
+        }
 
-        ItemConversa(
-            inicial = "M",
-            corAvatar = Color(0xFFE91E63),
-            nome = "Maria",
-            ultimaMensagem = "Oi! Tudo bem?",
-            horario = "10:42",
-            modifier = Modifier.alvoTutorial("conversa_maria")
-        )
+        // FAB verde flutuante (canto inferior direito)
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = Dimensoes.espacoMedio, bottom = 80.dp)
+                .size(60.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(VerdeWhatsAppFAB)
+                .alvoTutorial("btn_nova_conversa")
+        ) {
+            Icon(
+                imageVector = Icons.Filled.AddComment,
+                contentDescription = "Nova conversa",
+                tint = Color.White,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+    }
+}
 
-        ItemConversa(
-            inicial = "J",
-            corAvatar = Color(0xFF3F51B5),
-            nome = "João",
-            ultimaMensagem = "Bom dia!",
-            horario = "09:15"
-        )
-
-        ItemConversa(
-            inicial = "A",
-            corAvatar = Color(0xFFFF9800),
-            nome = "Ana",
-            ultimaMensagem = "Te ligo mais tarde 😊",
-            horario = "Ontem"
-        )
-
-        ItemConversa(
-            inicial = "P",
-            corAvatar = Color(0xFF4CAF50),
-            nome = "Pedro",
-            ultimaMensagem = "Obrigado!",
-            horario = "Ontem"
+@Composable
+private fun ChipFiltro(texto: String, selecionado: Boolean = false) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .height(32.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(if (selecionado) Color(0xFFD9FDD3) else FundoBuscaWhatsApp)
+            .padding(horizontal = 16.dp, vertical = 6.dp)
+    ) {
+        Text(
+            text = texto,
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (selecionado) Color(0xFF075E54) else MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -107,7 +234,7 @@ private fun ItemConversa(
             .fillMaxWidth()
             .padding(
                 horizontal = Dimensoes.espacoMedio,
-                vertical = Dimensoes.espacoMedio
+                vertical = Dimensoes.espacoPequeno
             )
     ) {
         Box(
@@ -143,3 +270,54 @@ private fun ItemConversa(
         )
     }
 }
+
+@Composable
+private fun BarraInferior() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .background(Color.White)
+    ) {
+        AbaInferior(icone = Icons.Filled.Chat, texto = "Conversas", selecionado = true)
+        AbaInferior(icone = Icons.Filled.Update, texto = "Atualizações")
+        AbaInferior(icone = Icons.Filled.Groups, texto = "Comunidades")
+        AbaInferior(icone = Icons.Filled.Call, texto = "Ligações")
+    }
+}
+
+@Composable
+private fun AbaInferior(icone: ImageVector, texto: String, selecionado: Boolean = false) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .height(28.dp)
+                .padding(horizontal = if (selecionado) 16.dp else 8.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(if (selecionado) Color(0xFFD9FDD3) else Color.Transparent)
+        ) {
+            Icon(
+                imageVector = icone,
+                contentDescription = texto,
+                tint = if (selecionado) Color(0xFF075E54) else CinzaIconePequeno,
+                modifier = Modifier.size(20.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(2.dp))
+        Text(
+            text = texto,
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (selecionado) Color(0xFF075E54) else CinzaIconePequeno
+        )
+    }
+}
+
+/**
+ * Helper para aplicar windowInsets sem importar tudo no Composable.
+ */
+@Composable
+private fun Modifier.windowInsetsPaddingStatusBars(): Modifier =
+    this.windowInsetsPadding(WindowInsets.statusBars)

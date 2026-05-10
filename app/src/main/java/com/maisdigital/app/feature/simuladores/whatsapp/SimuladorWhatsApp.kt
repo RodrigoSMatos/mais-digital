@@ -12,20 +12,12 @@ import androidx.compose.ui.Modifier
 import com.maisdigital.app.data.catalog.CatalogoAulasWhatsApp
 import com.maisdigital.app.domain.tutorial.LocalTutorialEngine
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaChamadaVideoAtiva
+import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaContatos
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaConversa
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaDialogChamadaVideo
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaListaConversas
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaNovoContato
 
-/**
- * Orquestrador do simulador WhatsApp.
- *
- * Decide qual tela mostrar com base no elementoAlvoId do passo atual.
- * Mantém estado interno (texto digitado, áudio gravando, câmera invertida).
- *
- * Filosofia: cada elementoAlvoId implica em uma tela específica.
- * Esse mapeamento está concentrado em [telaParaPasso] para fácil manutenção.
- */
 @Composable
 fun SimuladorWhatsApp(
     appId: String,
@@ -45,50 +37,41 @@ fun SimuladorWhatsApp(
     val tutorialState = state ?: return
     val passoAtualId = tutorialState.elementoAlvoId
 
-    // Reagir a passos específicos: simular "ações" do usuário
+    // Auto-preenche valores quando passa para certos passos
     LaunchedEffect(passoAtualId) {
         when (passoAtualId) {
-            // Aula "Adicionar contato"
+            // Aula 1 — quando chegou no passo do telefone, o nome já foi digitado
             "campo_telefone_contato" -> {
-                // Quando chegou no passo do telefone, o nome já foi "preenchido"
                 nomeContatoDigitado = "Carlos"
             }
             "btn_salvar_contato" -> {
                 telefoneContatoDigitado = "(11) 99999-1234"
             }
 
-            // Aula "Enviar mensagem"
+            // Aula 2 — texto auto-aparece
             "btn_enviar_mensagem" -> {
-                // Texto foi "digitado" automaticamente
                 textoDigitado = "Oi Maria! Tudo bem?"
             }
 
-            // Aula "Enviar áudio"
+            // Aula 3 — modo gravando
             "btn_enviar_audio" -> {
                 gravandoAudio = true
-            }
-
-            // Aula "Inverter câmera"
-            "btn_inverter_camera" -> {
-                // nada a fazer aqui — só esperando o clique
             }
         }
     }
 
-    // Reagir à conclusão de passos para inverter a câmera
+    // Reagir à conclusão de aulas com efeitos visuais
     LaunchedEffect(tutorialState.indicePasso) {
-        // Se a aula é "Inverter câmera" e estamos no último passo já avançado
-        if (aulaId == CatalogoAulasWhatsApp.ID_AULA_5 &&
-            tutorialState.concluida) {
+        if (aulaId == CatalogoAulasWhatsApp.ID_AULA_5 && tutorialState.concluida) {
             cameraInvertida = true
         }
     }
 
-    // Decidir tela a mostrar
     val telaAtual = telaParaPasso(passoAtualId)
 
     when (telaAtual) {
         TelaSimulada.LISTA_CONVERSAS -> TelaListaConversas(modifier.fillMaxSize())
+        TelaSimulada.CONTATOS        -> TelaContatos(modifier.fillMaxSize())
         TelaSimulada.NOVO_CONTATO    -> TelaNovoContato(
             nomeDigitado = nomeContatoDigitado,
             telefoneDigitado = telefoneContatoDigitado,
@@ -109,6 +92,7 @@ fun SimuladorWhatsApp(
 
 private enum class TelaSimulada {
     LISTA_CONVERSAS,
+    CONTATOS,
     NOVO_CONTATO,
     CONVERSA,
     DIALOG_VIDEO,
@@ -117,30 +101,30 @@ private enum class TelaSimulada {
 
 /**
  * Mapeamento centralizado: cada elementoAlvoId implica em uma tela.
- * Adicionar novos passos no futuro = adicionar uma linha aqui.
  */
 private fun telaParaPasso(passoAtualId: String): TelaSimulada {
     return when (passoAtualId) {
-        // Tela: Lista de conversas
-        "btn_novo_contato",
+        // Lista de conversas
+        "btn_nova_conversa",
         "conversa_maria"           -> TelaSimulada.LISTA_CONVERSAS
 
-        // Tela: Novo contato
+        // Tela de Contatos (intermediária da Aula 1)
+        "btn_novo_contato"         -> TelaSimulada.CONTATOS
+
+        // Formulário de Novo contato
         "campo_nome_contato",
         "campo_telefone_contato",
         "btn_salvar_contato"       -> TelaSimulada.NOVO_CONTATO
 
-        // Tela: Conversa aberta
+        // Conversa aberta
         "btn_chamada_video",
         "campo_mensagem",
         "btn_enviar_mensagem",
         "btn_microfone",
         "btn_enviar_audio"         -> TelaSimulada.CONVERSA
 
-        // Tela: Diálogo de chamada de vídeo
         "btn_confirmar_video"      -> TelaSimulada.DIALOG_VIDEO
 
-        // Tela: Chamada de vídeo ativa
         "btn_inverter_camera"      -> TelaSimulada.CHAMADA_VIDEO
 
         else                        -> TelaSimulada.LISTA_CONVERSAS

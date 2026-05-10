@@ -20,7 +20,7 @@ object CatalogoAulasWhatsApp {
     val aulas: List<Aula> = listOf(
 
         // ------------------------------------------------------------------
-        // Aula 1 — Adicionar contato
+        // Aula 1 — Adicionar contato (FLUXO REAL DO WHATSAPP)
         // ------------------------------------------------------------------
         Aula(
             id = ID_AULA_1,
@@ -32,21 +32,26 @@ object CatalogoAulasWhatsApp {
             passos = listOf(
                 Passo(
                     id = "wpp1_p1",
-                    instrucao = "Toque no ícone de novo contato (o lápis) no canto da tela.",
-                    elementoAlvoId = "btn_novo_contato"
+                    instrucao = "Toque no botão verde de nova conversa, no canto inferior direito da tela.",
+                    elementoAlvoId = "btn_nova_conversa"
                 ),
                 Passo(
                     id = "wpp1_p2",
+                    instrucao = "Agora toque em 'Novo contato' para criar um novo contato.",
+                    elementoAlvoId = "btn_novo_contato"
+                ),
+                Passo(
+                    id = "wpp1_p3",
                     instrucao = "Toque no campo 'Nome' para digitar o nome da pessoa.",
                     elementoAlvoId = "campo_nome_contato"
                 ),
                 Passo(
-                    id = "wpp1_p3",
+                    id = "wpp1_p4",
                     instrucao = "Agora toque no campo 'Telefone' para digitar o número.",
                     elementoAlvoId = "campo_telefone_contato"
                 ),
                 Passo(
-                    id = "wpp1_p4",
+                    id = "wpp1_p5",
                     instrucao = "Toque em 'Salvar' para guardar o novo contato.",
                     elementoAlvoId = "btn_salvar_contato"
                 )

@@ -28,3 +28,9 @@ val VerdeWhatsAppClaro = Color(0xFF25D366)
 val VerdeBolhaMensagem = Color(0xFFDCF8C6)
 val FundoChatWhatsApp = Color(0xFFECE5DD)
 val CinzaIconeChat = Color(0xFF54656F)
+
+// Cores extras do simulador WhatsApp 2.0
+val FundoBuscaWhatsApp = Color(0xFFF0F2F5)
+val CinzaIconePequeno = Color(0xFF8696A0)
+val VerdeWhatsAppFAB = Color(0xFF25D366)
+val CinzaDivisor = Color(0xFFE9EDEF)
