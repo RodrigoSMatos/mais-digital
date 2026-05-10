@@ -136,9 +136,9 @@ fun TelaContatos(
 
         // Alguns contatos fake
         ItemContato(inicial = "A", corAvatar = Color(0xFF4DB6AC), nome = "Alan", status = "Disponível")
-        ItemContato(inicial = "A", corAvatar = Color(0xFFFFB74D), nome = "Alemão Sucata", status = "Disponível")
-        ItemContato(inicial = "A", corAvatar = Color(0xFFE57373), nome = "Alice", status = "Só chamadas urgentes")
-        ItemContato(inicial = "A", corAvatar = Color(0xFF81C784), nome = "Amilton", status = "Disponível")
+        ItemContato(inicial = "A", corAvatar = Color(0xFFFFB74D), nome = "Alice", status = "Disponível")
+        ItemContato(inicial = "A", corAvatar = Color(0xFFE57373), nome = "Aline", status = "Só chamadas urgentes")
+        ItemContato(inicial = "A", corAvatar = Color(0xFF81C784), nome = "Amanda", status = "Disponível")
     }
 }
 

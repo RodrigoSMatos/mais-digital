@@ -16,6 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maisdigital.app.core.ui.components.shakeEm
 import com.maisdigital.app.domain.tutorial.LocalRegistroAlvos
@@ -102,6 +104,24 @@ fun TutorialScreen(
                     .align(Alignment.BottomCenter)
             ) {
                 MensagemErroAmigavel(mensagem = state?.erro)
+            }
+
+            // Overlay transparente que descarta qualquer toque durante o período
+            // de carência. Por ser o último filho (maior z-order), é o hit target
+            // exclusivo: nenhum irmão recebe o evento enquanto estiver presente.
+            if (!aceitaCliques) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pointerInput(Unit) {
+                            awaitPointerEventScope {
+                                while (true) {
+                                    awaitPointerEvent(PointerEventPass.Initial)
+                                        .changes.forEach { it.consume() }
+                                }
+                            }
+                        }
+                )
             }
         }
     }
