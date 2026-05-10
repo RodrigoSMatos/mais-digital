@@ -307,7 +307,7 @@ private fun Miniatura(
     // Em "modo normal" mostra você (ou avatar se câmera desligada).
     val mostraOutra = visualizacaoExpandida
     val rotuloMini = if (mostraOutra) nomeOutraPessoa.first().toString() else "R"
-    val corMini = if (mostraOutra) Color(0xFFE91E63) else Color(0xFF455A64)
+    val corMini = if (mostraOutra) Color(0xFFE91E63) else Color(0xFF1565C0)
 
     Box(
         modifier = Modifier

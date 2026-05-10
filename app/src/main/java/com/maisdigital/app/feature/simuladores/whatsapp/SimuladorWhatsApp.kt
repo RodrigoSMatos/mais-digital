@@ -126,7 +126,11 @@ private fun aplicarAcaoAoConfirmarPasso(atual: EstadoSim, passoId: String): Esta
         "btn_inverter_camera",
         "btn_inverter_camera_mini" -> atual.copy(cameraInvertida = !atual.cameraInvertida)
 
-        // Abrir menu de opções ao confirmar clique nos 3 pontinhos
+        // Miniatura: clicar nela alterna visualização
+        "miniatura_propria_camera" -> atual.copy(visualizacaoExpandida = true)
+        "miniatura_outra_pessoa"   -> atual.copy(visualizacaoExpandida = false)
+
+        // Abrir menu de opções
         "btn_tres_pontinhos"       -> atual.copy(menuAberto = true)
 
         // Selecionar "Compartilhar tela" → abre diálogo
