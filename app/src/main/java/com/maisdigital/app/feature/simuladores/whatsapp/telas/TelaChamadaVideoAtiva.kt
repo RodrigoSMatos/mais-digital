@@ -423,7 +423,7 @@ private fun BarraControles(
             icone = Icons.Filled.MicOff,
             corFundo = if (microfoneSilenciado) Color.White else Color(0xFF2C2C2C),
             corIcone = if (microfoneSilenciado) Color.Black else Color.White,
-            modifier = Modifier.alvoTutorial("btn_microfone")
+            modifier = Modifier.alvoTutorial("btn_microfone_chamada")
         )
 
         // Encerrar (vermelho)

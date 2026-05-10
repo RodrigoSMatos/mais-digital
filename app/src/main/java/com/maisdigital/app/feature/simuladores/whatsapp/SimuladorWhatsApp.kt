@@ -9,13 +9,38 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.maisdigital.app.data.catalog.CatalogoAulasWhatsApp
 import com.maisdigital.app.domain.tutorial.LocalTutorialEngine
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaChamadaVideoAtiva
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaContatos
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaConversa
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaListaConversas
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaNovoContato
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+
+/**
+ * Estado completo do simulador WhatsApp.
+ * Imutável — para mudar algo, faça `copy(...)`.
+ */
+private data class EstadoSim(
+    // Conversa
+    val textoDigitado: String = "",
+    val gravandoAudio: Boolean = false,
+
+    // Novo contato
+    val nomeContatoDigitado: String = "",
+    val telefoneContatoDigitado: String = "",
+
+    // Chamada de vídeo
+    val cameraDesligada: Boolean = false,
+    val microfoneSilenciado: Boolean = false,
+    val vivaVozAtivo: Boolean = false,
+    val cameraInvertida: Boolean = false,
+    val visualizacaoExpandida: Boolean = false,
+    val menuAberto: Boolean = false,
+    val dialogCompartilharAberto: Boolean = false,
+    val compartilhandoTela: Boolean = false
+)
 
 @Composable
 fun SimuladorWhatsApp(
@@ -26,36 +51,32 @@ fun SimuladorWhatsApp(
     val engine = LocalTutorialEngine.current
     val state by (engine?.state?.collectAsState() ?: return)
 
-    // Estado interno do simulador
-    var textoDigitado by remember { mutableStateOf("") }
-    var gravandoAudio by remember { mutableStateOf(false) }
-    var nomeContatoDigitado by remember { mutableStateOf("") }
-    var telefoneContatoDigitado by remember { mutableStateOf("") }
-
-    // Estado da chamada de vídeo
-    var cameraDesligada by remember { mutableStateOf(false) }
-    var microfoneSilenciado by remember { mutableStateOf(false) }
-    var vivaVozAtivo by remember { mutableStateOf(false) }
-    var cameraInvertida by remember { mutableStateOf(false) }
-    var visualizacaoExpandida by remember { mutableStateOf(false) }
-    var menuAberto by remember { mutableStateOf(false) }
-    var dialogCompartilharAberto by remember { mutableStateOf(false) }
-    var compartilhandoTela by remember { mutableStateOf(false) }
+    // Reseta estado ao trocar de aula
+    var estado by remember(aulaId) { mutableStateOf(EstadoSim()) }
 
     val tutorialState = state ?: return
     val passoAtualId = tutorialState.elementoAlvoId
 
+    // Estado: rastreia qual passo já foi confirmado pra não reaplicar
+    var ultimoPassoConfirmado by remember { mutableStateOf("") }
+
+    // Aplica ajuste de estado SEMPRE que entra num passo novo
+    // (para o cenário onde o passo atual exige estado específico)
     LaunchedEffect(passoAtualId) {
-        when (passoAtualId) {
-            // ----- Aula 1 (adicionar contato)
-            "campo_telefone_contato" -> nomeContatoDigitado = "Carlos"
-            "btn_salvar_contato"     -> telefoneContatoDigitado = "(11) 99999-1234"
+        estado = aplicarAcaoAoEntrarNoPasso(estado, passoAtualId)
+    }
 
-            // ----- Aula 2 (enviar mensagem)
-            "btn_enviar_mensagem" -> textoDigitado = "Oi Maria! Tudo bem?"
-
-            // ----- Aula 3 (enviar áudio)
-            "btn_enviar_audio" -> gravandoAudio = true
+    // Aplica ação de TOGGLE quando o passo anterior foi CUMPRIDO
+    // (quando o índice avança, sabemos que o passo anterior foi clicado corretamente)
+    LaunchedEffect(tutorialState.indicePasso) {
+        val aula = tutorialState.aula
+        val indiceAnterior = tutorialState.indicePasso - 1
+        if (indiceAnterior >= 0 && indiceAnterior < aula.passos.size) {
+            val passoAnteriorId = aula.passos[indiceAnterior].elementoAlvoId
+            if (passoAnteriorId != ultimoPassoConfirmado) {
+                ultimoPassoConfirmado = passoAnteriorId
+                estado = aplicarAcaoAoConfirmarPasso(estado, passoAnteriorId)
+            }
         }
     }
 
@@ -65,28 +86,58 @@ fun SimuladorWhatsApp(
         TelaSimulada.LISTA_CONVERSAS -> TelaListaConversas(modifier.fillMaxSize())
         TelaSimulada.CONTATOS        -> TelaContatos(modifier.fillMaxSize())
         TelaSimulada.NOVO_CONTATO    -> TelaNovoContato(
-            nomeDigitado = nomeContatoDigitado,
-            telefoneDigitado = telefoneContatoDigitado,
+            nomeDigitado = estado.nomeContatoDigitado,
+            telefoneDigitado = estado.telefoneContatoDigitado,
             modifier = modifier.fillMaxSize()
         )
         TelaSimulada.CONVERSA        -> TelaConversa(
-            textoDigitado = textoDigitado,
-            gravandoAudio = gravandoAudio,
+            textoDigitado = estado.textoDigitado,
+            gravandoAudio = estado.gravandoAudio,
             modifier = modifier.fillMaxSize()
         )
         TelaSimulada.CHAMADA_VIDEO   -> TelaChamadaVideoAtiva(
-            cameraDesligada = cameraDesligada,
-            microfoneSilenciado = microfoneSilenciado,
-            vivaVozAtivo = vivaVozAtivo,
-            cameraInvertida = cameraInvertida,
-            visualizacaoExpandida = visualizacaoExpandida,
-            menuAberto = menuAberto,
-            dialogCompartilharAberto = dialogCompartilharAberto,
-            compartilhandoTela = compartilhandoTela,
+            cameraDesligada = estado.cameraDesligada,
+            microfoneSilenciado = estado.microfoneSilenciado,
+            vivaVozAtivo = estado.vivaVozAtivo,
+            cameraInvertida = estado.cameraInvertida,
+            visualizacaoExpandida = estado.visualizacaoExpandida,
+            menuAberto = estado.menuAberto,
+            dialogCompartilharAberto = estado.dialogCompartilharAberto,
+            compartilhandoTela = estado.compartilhandoTela,
             tempoChamada = "3:36",
             nomeOutraPessoa = "Maria",
             modifier = modifier.fillMaxSize()
         )
+    }
+}
+
+/**
+ * Aplica ação quando um passo é CUMPRIDO (usuário clicou corretamente).
+ * Aqui ficam os TOGGLES: ligar/desligar câmera, silenciar, etc.
+ */
+private fun aplicarAcaoAoConfirmarPasso(atual: EstadoSim, passoId: String): EstadoSim {
+    return when (passoId) {
+        // Toggles da chamada
+        "btn_camera_chamada"       -> atual.copy(cameraDesligada = !atual.cameraDesligada)
+        "btn_microfone_chamada"    -> atual.copy(microfoneSilenciado = !atual.microfoneSilenciado)
+        "btn_alto_falante"         -> atual.copy(vivaVozAtivo = !atual.vivaVozAtivo)
+        "btn_inverter_camera",
+        "btn_inverter_camera_mini" -> atual.copy(cameraInvertida = !atual.cameraInvertida)
+
+        // Abrir menu de opções ao confirmar clique nos 3 pontinhos
+        "btn_tres_pontinhos"       -> atual.copy(menuAberto = true)
+
+        // Selecionar "Compartilhar tela" → abre diálogo
+        "opcao_compartilhar_tela"  -> atual.copy(menuAberto = false, dialogCompartilharAberto = true)
+
+        // Aceitar → começa compartilhamento
+        "btn_aceitar_compartilhamento" -> atual.copy(
+            dialogCompartilharAberto = false,
+            compartilhandoTela = true
+        )
+        "btn_cancelar_compartilhamento" -> atual.copy(dialogCompartilharAberto = false)
+
+        else -> atual
     }
 }
 
@@ -98,28 +149,28 @@ private enum class TelaSimulada {
     CHAMADA_VIDEO
 }
 
+/**
+ * Mapeia cada elementoAlvoId para a tela que deve aparecer naquele passo.
+ */
 private fun telaParaPasso(passoAtualId: String): TelaSimulada {
     return when (passoAtualId) {
-        // Lista de conversas
         "btn_nova_conversa",
         "conversa_maria"           -> TelaSimulada.LISTA_CONVERSAS
 
-        // Tela de Contatos
         "btn_novo_contato"         -> TelaSimulada.CONTATOS
 
-        // Novo contato
         "campo_nome_contato",
         "campo_telefone_contato",
         "btn_salvar_contato"       -> TelaSimulada.NOVO_CONTATO
 
-        // Conversa aberta (Aulas 2-3 antigas e iniciar chamada)
+        // Conversa: btn_microfone aqui é o de áudio (Aula 3 antiga)
         "btn_chamada_video",
         "campo_mensagem",
         "btn_enviar_mensagem",
         "btn_microfone",
         "btn_enviar_audio"         -> TelaSimulada.CONVERSA
 
-        // Tudo da chamada de vídeo (todas as 6 novas aulas)
+        // Chamada: btn_microfone_chamada é o de silenciar
         "btn_minimizar_chamada",
         "info_pessoa_chamada",
         "btn_adicionar_pessoa",
@@ -133,6 +184,7 @@ private fun telaParaPasso(passoAtualId: String): TelaSimulada {
         "btn_tres_pontinhos",
         "btn_camera_chamada",
         "btn_alto_falante",
+        "btn_microfone_chamada",
         "btn_encerrar_chamada",
         "aviso_microfone_silenciado",
         "menu_opcoes_chamada",
@@ -143,8 +195,70 @@ private fun telaParaPasso(passoAtualId: String): TelaSimulada {
         "btn_aceitar_compartilhamento",
         "btn_cancelar_compartilhamento",
         "aviso_compartilhamento_ativo",
-        "btn_parar_compartilhamento"   -> TelaSimulada.CHAMADA_VIDEO
+        "btn_parar_compartilhamento" -> TelaSimulada.CHAMADA_VIDEO
 
         else                       -> TelaSimulada.LISTA_CONVERSAS
+    }
+}
+
+
+/**
+ * Ao ENTRAR num passo, ajusta o estado para que a tela esteja no contexto certo
+ * PARA O PASSO ATUAL (não para o anterior).
+ *
+ * Regra de ouro: cada passo entra no estado em que ele precisa estar para
+ * o usuário poder executá-lo. Ex: se o passo é "toque na opção compartilhar
+ * tela", o menu precisa já estar aberto. Se o passo é "toque nos três pontinhos",
+ * o menu NÃO pode estar aberto.
+ */
+private fun aplicarAcaoAoEntrarNoPasso(atual: EstadoSim, passoId: String): EstadoSim {
+    return when (passoId) {
+        // ----- Aula 1 (adicionar contato): preenchimento automático
+        "campo_telefone_contato" -> atual.copy(nomeContatoDigitado = "Carlos")
+        "btn_salvar_contato"     -> atual.copy(telefoneContatoDigitado = "(11) 99999-1234")
+
+        // ----- Aula 2 (mensagem)
+        "btn_enviar_mensagem"    -> atual.copy(textoDigitado = "Oi Maria! Tudo bem?")
+
+        // ----- Aula 3 (áudio)
+        "btn_enviar_audio"       -> atual.copy(gravandoAudio = true)
+
+        // ----- Aulas de chamada -----
+        // Volta ao estado padrão da chamada quando o passo é apenas iniciar
+        "btn_chamada_video"      -> atual.copy(
+            menuAberto = false,
+            dialogCompartilharAberto = false,
+            compartilhandoTela = false
+        )
+
+        // Passos onde o menu PRECISA estar aberto
+        "opcao_compartilhar_tela",
+        "opcao_enviar_mensagem",
+        "opcao_levantar_mao",
+        "menu_opcoes_chamada"    -> atual.copy(menuAberto = true)
+
+        // Passos onde o menu NÃO pode estar aberto (chegamos antes de abrir)
+        "btn_tres_pontinhos"     -> atual.copy(menuAberto = false)
+
+        // Passos onde a visualização PRECISA estar expandida (você grande)
+        "miniatura_outra_pessoa" -> atual.copy(visualizacaoExpandida = true)
+
+        // Passos onde a visualização PRECISA estar normal (Maria grande)
+        "miniatura_propria_camera" -> atual.copy(visualizacaoExpandida = false)
+
+        // Passos do compartilhamento de tela: estados intermediários
+        "btn_aceitar_compartilhamento",
+        "btn_cancelar_compartilhamento" -> atual.copy(
+            menuAberto = false,
+            dialogCompartilharAberto = true
+        )
+        "aviso_compartilhamento_ativo" -> atual.copy(
+            menuAberto = false,
+            dialogCompartilharAberto = false,
+            compartilhandoTela = true
+        )
+
+        // Demais passos: estado não muda
+        else -> atual
     }
 }
