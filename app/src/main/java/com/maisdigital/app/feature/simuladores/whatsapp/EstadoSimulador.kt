@@ -5,9 +5,8 @@ package com.maisdigital.app.feature.simuladores.whatsapp
  */
 sealed class EstadoSimulador {
     data object ListaConversas : EstadoSimulador()
-    data object Contatos : EstadoSimulador()       // novo
+    data object Contatos : EstadoSimulador()
     data object NovoContato : EstadoSimulador()
     data object Conversa : EstadoSimulador()
-    data object DialogChamadaVideo : EstadoSimulador()
     data object ChamadaVideoAtiva : EstadoSimulador()
 }

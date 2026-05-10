@@ -14,7 +14,6 @@ import com.maisdigital.app.domain.tutorial.LocalTutorialEngine
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaChamadaVideoAtiva
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaContatos
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaConversa
-import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaDialogChamadaVideo
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaListaConversas
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaNovoContato
 
@@ -30,40 +29,33 @@ fun SimuladorWhatsApp(
     // Estado interno do simulador
     var textoDigitado by remember { mutableStateOf("") }
     var gravandoAudio by remember { mutableStateOf(false) }
-    var cameraInvertida by remember { mutableStateOf(false) }
     var nomeContatoDigitado by remember { mutableStateOf("") }
     var telefoneContatoDigitado by remember { mutableStateOf("") }
+
+    // Estado da chamada de vídeo
+    var cameraDesligada by remember { mutableStateOf(false) }
+    var microfoneSilenciado by remember { mutableStateOf(false) }
+    var vivaVozAtivo by remember { mutableStateOf(false) }
+    var cameraInvertida by remember { mutableStateOf(false) }
+    var visualizacaoExpandida by remember { mutableStateOf(false) }
+    var menuAberto by remember { mutableStateOf(false) }
+    var dialogCompartilharAberto by remember { mutableStateOf(false) }
+    var compartilhandoTela by remember { mutableStateOf(false) }
 
     val tutorialState = state ?: return
     val passoAtualId = tutorialState.elementoAlvoId
 
-    // Auto-preenche valores quando passa para certos passos
     LaunchedEffect(passoAtualId) {
         when (passoAtualId) {
-            // Aula 1 — quando chegou no passo do telefone, o nome já foi digitado
-            "campo_telefone_contato" -> {
-                nomeContatoDigitado = "Carlos"
-            }
-            "btn_salvar_contato" -> {
-                telefoneContatoDigitado = "(11) 99999-1234"
-            }
+            // ----- Aula 1 (adicionar contato)
+            "campo_telefone_contato" -> nomeContatoDigitado = "Carlos"
+            "btn_salvar_contato"     -> telefoneContatoDigitado = "(11) 99999-1234"
 
-            // Aula 2 — texto auto-aparece
-            "btn_enviar_mensagem" -> {
-                textoDigitado = "Oi Maria! Tudo bem?"
-            }
+            // ----- Aula 2 (enviar mensagem)
+            "btn_enviar_mensagem" -> textoDigitado = "Oi Maria! Tudo bem?"
 
-            // Aula 3 — modo gravando
-            "btn_enviar_audio" -> {
-                gravandoAudio = true
-            }
-        }
-    }
-
-    // Reagir à conclusão de aulas com efeitos visuais
-    LaunchedEffect(tutorialState.indicePasso) {
-        if (aulaId == CatalogoAulasWhatsApp.ID_AULA_5 && tutorialState.concluida) {
-            cameraInvertida = true
+            // ----- Aula 3 (enviar áudio)
+            "btn_enviar_audio" -> gravandoAudio = true
         }
     }
 
@@ -82,9 +74,17 @@ fun SimuladorWhatsApp(
             gravandoAudio = gravandoAudio,
             modifier = modifier.fillMaxSize()
         )
-        TelaSimulada.DIALOG_VIDEO    -> TelaDialogChamadaVideo(modifier.fillMaxSize())
         TelaSimulada.CHAMADA_VIDEO   -> TelaChamadaVideoAtiva(
+            cameraDesligada = cameraDesligada,
+            microfoneSilenciado = microfoneSilenciado,
+            vivaVozAtivo = vivaVozAtivo,
             cameraInvertida = cameraInvertida,
+            visualizacaoExpandida = visualizacaoExpandida,
+            menuAberto = menuAberto,
+            dialogCompartilharAberto = dialogCompartilharAberto,
+            compartilhandoTela = compartilhandoTela,
+            tempoChamada = "3:36",
+            nomeOutraPessoa = "Maria",
             modifier = modifier.fillMaxSize()
         )
     }
@@ -95,38 +95,56 @@ private enum class TelaSimulada {
     CONTATOS,
     NOVO_CONTATO,
     CONVERSA,
-    DIALOG_VIDEO,
     CHAMADA_VIDEO
 }
 
-/**
- * Mapeamento centralizado: cada elementoAlvoId implica em uma tela.
- */
 private fun telaParaPasso(passoAtualId: String): TelaSimulada {
     return when (passoAtualId) {
         // Lista de conversas
         "btn_nova_conversa",
         "conversa_maria"           -> TelaSimulada.LISTA_CONVERSAS
 
-        // Tela de Contatos (intermediária da Aula 1)
+        // Tela de Contatos
         "btn_novo_contato"         -> TelaSimulada.CONTATOS
 
-        // Formulário de Novo contato
+        // Novo contato
         "campo_nome_contato",
         "campo_telefone_contato",
         "btn_salvar_contato"       -> TelaSimulada.NOVO_CONTATO
 
-        // Conversa aberta
+        // Conversa aberta (Aulas 2-3 antigas e iniciar chamada)
         "btn_chamada_video",
         "campo_mensagem",
         "btn_enviar_mensagem",
         "btn_microfone",
         "btn_enviar_audio"         -> TelaSimulada.CONVERSA
 
-        "btn_confirmar_video"      -> TelaSimulada.DIALOG_VIDEO
+        // Tudo da chamada de vídeo (todas as 6 novas aulas)
+        "btn_minimizar_chamada",
+        "info_pessoa_chamada",
+        "btn_adicionar_pessoa",
+        "btn_inverter_camera",
+        "btn_filtros",
+        "area_principal_chamada",
+        "miniatura_propria_camera",
+        "miniatura_outra_pessoa",
+        "btn_inverter_camera_mini",
+        "btn_barra_inferior",
+        "btn_tres_pontinhos",
+        "btn_camera_chamada",
+        "btn_alto_falante",
+        "btn_encerrar_chamada",
+        "aviso_microfone_silenciado",
+        "menu_opcoes_chamada",
+        "opcao_compartilhar_tela",
+        "opcao_enviar_mensagem",
+        "opcao_levantar_mao",
+        "dialog_confirmar_compartilhamento",
+        "btn_aceitar_compartilhamento",
+        "btn_cancelar_compartilhamento",
+        "aviso_compartilhamento_ativo",
+        "btn_parar_compartilhamento"   -> TelaSimulada.CHAMADA_VIDEO
 
-        "btn_inverter_camera"      -> TelaSimulada.CHAMADA_VIDEO
-
-        else                        -> TelaSimulada.LISTA_CONVERSAS
+        else                       -> TelaSimulada.LISTA_CONVERSAS
     }
 }

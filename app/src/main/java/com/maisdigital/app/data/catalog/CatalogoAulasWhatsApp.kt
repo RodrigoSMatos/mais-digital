@@ -117,7 +117,7 @@ object CatalogoAulasWhatsApp {
         ),
 
         // ------------------------------------------------------------------
-        // Aula 4 — Iniciar chamada de vídeo
+        // Aula 4 — Iniciar chamada de vídeo (versão atualizada)
         // ------------------------------------------------------------------
         Aula(
             id = ID_AULA_4,
@@ -134,19 +134,19 @@ object CatalogoAulasWhatsApp {
                 ),
                 Passo(
                     id = "wpp4_p2",
-                    instrucao = "Toque no ícone de câmera no canto superior direito.",
+                    instrucao = "Toque no ícone de câmera no canto superior direito para iniciar a chamada.",
                     elementoAlvoId = "btn_chamada_video"
                 ),
                 Passo(
                     id = "wpp4_p3",
-                    instrucao = "Toque em 'Chamada de vídeo' para confirmar.",
-                    elementoAlvoId = "btn_confirmar_video"
+                    instrucao = "A chamada começou! Toque no botão vermelho para encerrar.",
+                    elementoAlvoId = "btn_encerrar_chamada"
                 )
             )
         ),
 
         // ------------------------------------------------------------------
-        // Aula 5 — Inverter câmera durante chamada
+        // Aula 5 — Inverter câmera (versão atualizada)
         // ------------------------------------------------------------------
         Aula(
             id = ID_AULA_5,
@@ -168,11 +168,6 @@ object CatalogoAulasWhatsApp {
                 ),
                 Passo(
                     id = "wpp5_p3",
-                    instrucao = "Toque em 'Chamada de vídeo' para confirmar.",
-                    elementoAlvoId = "btn_confirmar_video"
-                ),
-                Passo(
-                    id = "wpp5_p4",
                     instrucao = "Agora toque no botão de inverter câmera.",
                     elementoAlvoId = "btn_inverter_camera"
                 )
