@@ -57,26 +57,28 @@ fun SimuladorWhatsApp(
     val tutorialState = state ?: return
     val passoAtualId = tutorialState.elementoAlvoId
 
-    // Estado: rastreia qual passo já foi confirmado pra não reaplicar
-    var ultimoPassoConfirmado by remember { mutableStateOf("") }
+    // Rastreia o ÍNDICE do último passo confirmado.
+    // Usar índice (não id) garante que cada confirmação seja única, mesmo
+    // quando dois passos consecutivos têm o mesmo elementoAlvoId.
+    // -1 = nada confirmado ainda nesta aula.
+    var indiceUltimoConfirmado by remember(aulaId) { mutableStateOf(-1) }
 
     // Aplica ajuste de estado SEMPRE que entra num passo novo
-    // (para o cenário onde o passo atual exige estado específico)
     LaunchedEffect(passoAtualId) {
         estado = aplicarAcaoAoEntrarNoPasso(estado, passoAtualId)
     }
 
     // Aplica ação de TOGGLE quando o passo anterior foi CUMPRIDO
-    // (quando o índice avança, sabemos que o passo anterior foi clicado corretamente)
     LaunchedEffect(tutorialState.indicePasso) {
         val aula = tutorialState.aula
         val indiceAnterior = tutorialState.indicePasso - 1
-        if (indiceAnterior >= 0 && indiceAnterior < aula.passos.size) {
+        if (indiceAnterior >= 0 &&
+            indiceAnterior < aula.passos.size &&
+            indiceAnterior != indiceUltimoConfirmado
+        ) {
+            indiceUltimoConfirmado = indiceAnterior
             val passoAnteriorId = aula.passos[indiceAnterior].elementoAlvoId
-            if (passoAnteriorId != ultimoPassoConfirmado) {
-                ultimoPassoConfirmado = passoAnteriorId
-                estado = aplicarAcaoAoConfirmarPasso(estado, passoAnteriorId)
-            }
+            estado = aplicarAcaoAoConfirmarPasso(estado, passoAnteriorId)
         }
     }
 
