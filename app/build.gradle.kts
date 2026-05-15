@@ -88,4 +88,10 @@ dependencies {
     // Debug
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // Animações Lottie
+    implementation(libs.lottie.compose)
+
+    // Carregamento eficiente de imagens com cache
+    implementation(libs.coil.compose)
 }

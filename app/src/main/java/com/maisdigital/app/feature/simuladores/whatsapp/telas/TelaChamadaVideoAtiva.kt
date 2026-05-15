@@ -37,6 +37,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.maisdigital.app.core.ui.theme.Dimensoes
 import com.maisdigital.app.domain.tutorial.alvoTutorial
+import com.maisdigital.app.feature.simuladores.whatsapp.components.PedroBorbaAnimado
+
 
 /**
  * Tela de Chamada de Vídeo ATIVA — fiel ao WhatsApp real (ver print da tela).
@@ -260,8 +262,6 @@ private fun AreaPrincipalChamada(
     nomeOutraPessoa: String,
     modifier: Modifier = Modifier
 ) {
-    // Em "modo normal": grande = outra pessoa
-    // Em "modo expandido": grande = você mesmo
     val corFundo = if (visualizacaoExpandida) Color(0xFF37474F) else Color(0xFF455A64)
     val labelGrande = if (visualizacaoExpandida) "Você" else nomeOutraPessoa
 
@@ -270,19 +270,28 @@ private fun AreaPrincipalChamada(
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Box(
-                modifier = Modifier
-                    .size(140.dp)
-                    .clip(CircleShape)
-                    .background(if (visualizacaoExpandida) Color(0xFF1565C0) else Color(0xFFE91E63)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = labelGrande.first().toString(),
-                    color = Color.White,
-                    style = MaterialTheme.typography.displayLarge
+            if (visualizacaoExpandida) {
+                // Visualização expandida = "Você" → círculo azul
+                Box(
+                    modifier = Modifier
+                        .size(140.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF1565C0)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = labelGrande.first().toString(),
+                        color = Color.White,
+                        style = MaterialTheme.typography.displayLarge
+                    )
+                }
+            } else {
+                // Visualização normal = Pedro Borba animado
+                PedroBorbaAnimado(
+                    modifier = Modifier.size(width = 280.dp, height = 380.dp)
                 )
             }
+
             Spacer(modifier = Modifier.height(Dimensoes.espacoMedio))
             Text(
                 text = labelGrande,
