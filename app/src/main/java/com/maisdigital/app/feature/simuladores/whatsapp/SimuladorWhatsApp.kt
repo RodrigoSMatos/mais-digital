@@ -15,21 +15,8 @@ import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaContatos
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaConversa
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaListaConversas
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaNovoContato
-
-/**
- * Aulas em que a miniatura própria deve ser INTERATIVA (clicável, registrada
- * como alvo do tutorial, capaz de alternar a visualização).
- *
- * Em todas as outras aulas, a miniatura é puramente decorativa — faz parte
- * do "cenário" da chamada, mas não dispara nenhuma ação nem aparece como
- * alvo do tutorial. Isso evita que aulas de reconhecimento (como a Aula 4)
- * acabem caindo num estado expandido onde o vídeo do Pedro vira um simples
- * retângulo com nome em texto.
- *
- * Para adicionar futuras aulas que precisem da miniatura interativa, basta
- * incluir o id da aula neste conjunto.
- */
-private val AULAS_COM_MINIATURA_INTERATIVA = setOf("wpp_aula_7")
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
 /**
  * Estado completo do simulador WhatsApp.
@@ -121,7 +108,6 @@ fun SimuladorWhatsApp(
             compartilhandoTela = estado.compartilhandoTela,
             tempoChamada = "3:36",
             nomeOutraPessoa = "Pedro Borba",
-            miniaturaInterativa = aulaId in AULAS_COM_MINIATURA_INTERATIVA,
             modifier = modifier.fillMaxSize()
         )
     }

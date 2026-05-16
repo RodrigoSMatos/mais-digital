@@ -32,6 +32,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import com.maisdigital.app.R
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
@@ -264,22 +270,43 @@ fun TelaChamadaVideoAtiva(
 // Componentes internos
 // --------------------------------------------------------------------------
 
+/**
+ * Fundo simulando o ambiente onde a outra pessoa está — sala aconchegante
+ * desfocada, com luz quente. Imagem já vem desfocada no asset, então não
+ * precisa de tratamento adicional.
+ *
+ * Usada como pano de fundo atrás do Pedro tanto na área principal quanto
+ * na miniatura (aula 7 expandida).
+ */
+@Composable
+private fun FundoSala(modifier: Modifier = Modifier) {
+    Image(
+        painter = painterResource(id = R.drawable.fundo_sala_pedro),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+    )
+}
+
 @Composable
 private fun AreaPrincipalChamada(
     visualizacaoExpandida: Boolean,
     nomeOutraPessoa: String,
     modifier: Modifier = Modifier
 ) {
-    val corFundo = if (visualizacaoExpandida) Color(0xFF37474F) else Color(0xFF455A64)
-    val labelGrande = if (visualizacaoExpandida) "Você" else nomeOutraPessoa
+    Box(modifier = modifier, contentAlignment = Alignment.Center) {
 
-    Box(
-        modifier = modifier.background(corFundo),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            if (visualizacaoExpandida) {
-                // Visualização expandida = "Você" → círculo azul
+        // FUNDO: simula ambiente caseiro atrás do Pedro.
+        // Quando "Você" está expandido, mantém fundo neutro escuro.
+        if (visualizacaoExpandida) {
+            Box(modifier = Modifier.fillMaxSize().background(Color(0xFF37474F)))
+        } else {
+            FundoSala(modifier = Modifier.fillMaxSize())
+        }
+
+        if (visualizacaoExpandida) {
+            // "Você" → círculo azul centralizado + label
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Box(
                     modifier = Modifier
                         .size(140.dp)
@@ -288,23 +315,28 @@ private fun AreaPrincipalChamada(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = labelGrande.first().toString(),
+                        text = "V",
                         color = Color.White,
                         style = MaterialTheme.typography.displayLarge
                     )
                 }
-            } else {
-                // Visualização normal = Pedro Borba animado
-                PedroBorbaAnimado(
-                    modifier = Modifier.size(width = 280.dp, height = 380.dp)
+                Spacer(modifier = Modifier.height(Dimensoes.espacoMedio))
+                Text(
+                    text = "Você",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White
                 )
             }
-
-            Spacer(modifier = Modifier.height(Dimensoes.espacoMedio))
-            Text(
-                text = labelGrande,
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color.White
+        } else {
+            // Pedro Borba em enquadramento "da cintura pra cima" — como uma
+            // câmera de chamada de vídeo real. Imagem é propositalmente maior
+            // que a tela, ancorada pelo topo: o rosto fica no terço superior
+            // (regra dos terços) e a cintura pra baixo sai pela borda inferior.
+            PedroBorbaAnimado(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .offset(x = 50.dp, y = 50.dp)
+                    .requiredSize(width = 680.dp, height = 1265.dp)
             )
         }
     }
@@ -330,12 +362,19 @@ private fun Miniatura(
         modifier = Modifier
             .size(width = largura, height = altura)
             .clip(RoundedCornerShape(12.dp))
-            .background(corMini)
             .alvoTutorial(
                 if (mostraOutra) "miniatura_outra_pessoa" else "miniatura_propria_camera"
             ),
         contentAlignment = Alignment.Center
     ) {
+        // Fundo: sala (atrás do Pedro) quando mostra a outra pessoa,
+        // cor sólida quando mostra "Você"
+        if (mostraOutra) {
+            FundoSala(modifier = Modifier.fillMaxSize())
+        } else {
+            Box(modifier = Modifier.fillMaxSize().background(corMini))
+        }
+
         if (cameraDesligada && !mostraOutra) {
             // Avatar redondo quando câmera desligada
             Box(
