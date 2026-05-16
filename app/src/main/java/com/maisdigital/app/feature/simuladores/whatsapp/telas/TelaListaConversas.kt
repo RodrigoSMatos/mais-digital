@@ -58,7 +58,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
  *
  * Alvos:
  *  - "btn_nova_conversa" → FAB verde flutuante (abre tela de Contatos)
- *  - "conversa_maria"    → item da Maria
+ *  - "conversa_pedro"    → item do Pedro
  */
 @Composable
 fun TelaListaConversas(
@@ -146,12 +146,12 @@ fun TelaListaConversas(
             // Lista de conversas
             Column(modifier = Modifier.weight(1f)) {
                 ItemConversa(
-                    inicial = "M",
-                    corAvatar = Color(0xFFE91E63),
-                    nome = "Maria",
+                    inicial = "P",
+                    corAvatar = Color(0xFF00897B),
+                    nome = "Pedro Borba",
                     ultimaMensagem = "Oi! Tudo bem?",
                     horario = "10:42",
-                    modifier = Modifier.alvoTutorial("conversa_maria")
+                    modifier = Modifier.alvoTutorial("conversa_pedro")
                 )
                 ItemConversa(
                     inicial = "J",

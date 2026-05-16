@@ -40,7 +40,7 @@ import com.maisdigital.app.domain.tutorial.alvoTutorial
 
 
 /**
- * Tela de conversa aberta com a Maria.
+ * Tela de conversa aberta com a Pedro.
  *
  * Alvos disponíveis (alguns só aparecem em momentos específicos):
  *  - "btn_chamada_video"   → ícone de câmera no header
@@ -81,17 +81,15 @@ fun TelaConversa(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFFE91E63)),
+                        .background(Color(0xFF00897B)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        "M", color = Color.White,
-                        style = MaterialTheme.typography.titleMedium
-                    )
+                    Text("P", color = Color.White,
+                        style = MaterialTheme.typography.titleMedium)
                 }
                 Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
                 Text(
-                    text = "Maria",
+                    text = "Pedro Borba",
                     style = MaterialTheme.typography.titleLarge,
                     color = Color.White,
                     modifier = Modifier.weight(1f)
@@ -123,7 +121,7 @@ fun TelaConversa(
         ) {
             BolhaRecebida("Oi! Tudo bem?")
             Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
-            BolhaRecebida("Vamos marcar de tomar um café?")
+            BolhaRecebida("Bom te ver!")
 
             // Se o usuário "digitou" algo, mostrar como mensagem enviada
             if (textoDigitado.isNotEmpty()) {
@@ -168,6 +166,7 @@ fun TelaConversa(
         }
     }
 }
+
 
 @Composable
 private fun BotaoAcaoDireita(

@@ -15,8 +15,21 @@ import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaContatos
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaConversa
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaListaConversas
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaNovoContato
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+
+/**
+ * Aulas em que a miniatura própria deve ser INTERATIVA (clicável, registrada
+ * como alvo do tutorial, capaz de alternar a visualização).
+ *
+ * Em todas as outras aulas, a miniatura é puramente decorativa — faz parte
+ * do "cenário" da chamada, mas não dispara nenhuma ação nem aparece como
+ * alvo do tutorial. Isso evita que aulas de reconhecimento (como a Aula 4)
+ * acabem caindo num estado expandido onde o vídeo do Pedro vira um simples
+ * retângulo com nome em texto.
+ *
+ * Para adicionar futuras aulas que precisem da miniatura interativa, basta
+ * incluir o id da aula neste conjunto.
+ */
+private val AULAS_COM_MINIATURA_INTERATIVA = setOf("wpp_aula_7")
 
 /**
  * Estado completo do simulador WhatsApp.
@@ -107,7 +120,8 @@ fun SimuladorWhatsApp(
             dialogCompartilharAberto = estado.dialogCompartilharAberto,
             compartilhandoTela = estado.compartilhandoTela,
             tempoChamada = "3:36",
-            nomeOutraPessoa = "Maria",
+            nomeOutraPessoa = "Pedro Borba",
+            miniaturaInterativa = aulaId in AULAS_COM_MINIATURA_INTERATIVA,
             modifier = modifier.fillMaxSize()
         )
     }
@@ -161,7 +175,7 @@ private enum class TelaSimulada {
 private fun telaParaPasso(passoAtualId: String): TelaSimulada {
     return when (passoAtualId) {
         "btn_nova_conversa",
-        "conversa_maria"           -> TelaSimulada.LISTA_CONVERSAS
+        "conversa_pedro"           -> TelaSimulada.LISTA_CONVERSAS
 
         "btn_novo_contato"         -> TelaSimulada.CONTATOS
 
@@ -224,7 +238,7 @@ private fun aplicarAcaoAoEntrarNoPasso(atual: EstadoSim, passoId: String): Estad
         "btn_salvar_contato"     -> atual.copy(telefoneContatoDigitado = "(11) 99999-1234")
 
         // ----- Aula 2 (mensagem)
-        "btn_enviar_mensagem"    -> atual.copy(textoDigitado = "Oi Maria! Tudo bem?")
+        "btn_enviar_mensagem"    -> atual.copy(textoDigitado = "Oi Pedro! Tudo bem?")
 
         // ----- Aula 3 (áudio)
         "btn_enviar_audio"       -> atual.copy(gravandoAudio = true)
@@ -249,7 +263,7 @@ private fun aplicarAcaoAoEntrarNoPasso(atual: EstadoSim, passoId: String): Estad
         // Passos onde a visualização PRECISA estar expandida (você grande)
         "miniatura_outra_pessoa" -> atual.copy(visualizacaoExpandida = true)
 
-        // Passos onde a visualização PRECISA estar normal (Maria grande)
+        // Passos onde a visualização PRECISA estar normal (Pedro grande)
         "miniatura_propria_camera" -> atual.copy(visualizacaoExpandida = false)
 
         // Passos do compartilhamento de tela: estados intermediários

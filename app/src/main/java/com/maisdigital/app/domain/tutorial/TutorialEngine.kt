@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
  *   val engine = TutorialEngine(mensagensErro)
  *   engine.iniciar(aula)
  *   engine.state.collect { state -> /* atualiza UI */ }
- *   engine.aoClicar("conversa_maria")
+ *   engine.aoClicar("conversa_pedro")
  */
 class TutorialEngine(
     private val mensagensErro: List<String> = listOf(

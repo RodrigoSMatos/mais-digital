@@ -106,6 +106,7 @@ fun TelaChamadaVideoAtiva(
     compartilhandoTela: Boolean,
     tempoChamada: String,
     nomeOutraPessoa: String,
+    miniaturaInterativa: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -202,12 +203,19 @@ fun TelaChamadaVideoAtiva(
                 .align(Alignment.BottomEnd)
                 .padding(end = Dimensoes.espacoMedio, bottom = 110.dp)
         ) {
-            Miniatura(
-                visualizacaoExpandida = visualizacaoExpandida,
-                cameraDesligada = cameraDesligada,
-                cameraInvertida = cameraInvertida,
-                nomeOutraPessoa = nomeOutraPessoa
-            )
+            if (miniaturaInterativa) {
+                Miniatura(
+                    visualizacaoExpandida = visualizacaoExpandida,
+                    cameraDesligada = cameraDesligada,
+                    cameraInvertida = cameraInvertida,
+                    nomeOutraPessoa = nomeOutraPessoa
+                )
+            } else {
+                MiniaturaEstatica(
+                    cameraDesligada = cameraDesligada,
+                    nomeOutraPessoa = nomeOutraPessoa
+                )
+            }
         }
 
         // BARRA INFERIOR DE CONTROLES
@@ -316,7 +324,7 @@ private fun Miniatura(
     // Em "modo normal" mostra você (ou avatar se câmera desligada).
     val mostraOutra = visualizacaoExpandida
     val rotuloMini = if (mostraOutra) nomeOutraPessoa.first().toString() else "R"
-    val corMini = if (mostraOutra) Color(0xFFE91E63) else Color(0xFF1565C0)
+    val corMini = if (mostraOutra) Color(0xFF00897B) else Color(0xFF1565C0)
 
     Box(
         modifier = Modifier
@@ -347,23 +355,7 @@ private fun Miniatura(
             )
         }
 
-        // Ícone de microfone riscado se silenciado (em cima da miniatura)
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopStart)
-                .padding(6.dp)
-                .size(20.dp)
-                .clip(CircleShape)
-                .background(Color.Black.copy(alpha = 0.5f)),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Filled.MicOff,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(12.dp)
-            )
-        }
+
 
         // Em modo expandido, mostrar botão de inverter câmera dentro da miniatura
         if (visualizacaoExpandida) {
@@ -381,6 +373,41 @@ private fun Miniatura(
                     icone = Icons.Filled.AutoFixHigh
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun MiniaturaEstatica(
+    cameraDesligada: Boolean,
+    nomeOutraPessoa: String   // mantido pela API mas não usado; remova se preferir
+) {
+    val largura = 100.dp
+    val altura = 150.dp
+
+    Box(
+        modifier = Modifier
+            .size(width = largura, height = altura)
+            .clip(RoundedCornerShape(12.dp))
+            .background(Color(0xFF1565C0)),   // azul fixo de "Você"
+        contentAlignment = Alignment.Center
+    ) {
+        if (cameraDesligada) {
+            Box(
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(CircleShape)
+                    .background(Color(0xFF607D8B)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("R", color = Color.White, style = MaterialTheme.typography.headlineSmall)
+            }
+        } else {
+            Text(
+                text = "Você",
+                color = Color.White,
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
     }
 }

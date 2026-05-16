@@ -76,8 +76,8 @@ object CatalogoAulasWhatsApp {
             passos = listOf(
                 Passo(
                     id = "wpp2_p1",
-                    instrucao = "Toque na conversa da Maria para abri-la.",
-                    elementoAlvoId = "conversa_maria"
+                    instrucao = "Toque na conversa do Pedro para abri-la.",
+                    elementoAlvoId = "conversa_pedro"
                 ),
                 Passo(
                     id = "wpp2_p2",
@@ -105,8 +105,8 @@ object CatalogoAulasWhatsApp {
             passos = listOf(
                 Passo(
                     id = "wpp3_p1",
-                    instrucao = "Toque na conversa da Maria para abri-la.",
-                    elementoAlvoId = "conversa_maria"
+                    instrucao = "Toque na conversa do Pedro para abri-la.",
+                    elementoAlvoId = "conversa_pedro"
                 ),
                 Passo(
                     id = "wpp3_p2",
@@ -134,8 +134,8 @@ object CatalogoAulasWhatsApp {
             passos = listOf(
                 Passo(
                     id = "wpp4_p1",
-                    instrucao = "Toque na conversa da Maria para começar.",
-                    elementoAlvoId = "conversa_maria"
+                    instrucao = "Toque na conversa do Pedro para começar.",
+                    elementoAlvoId = "conversa_pedro"
                 ),
                 Passo(
                     id = "wpp4_p2",
@@ -178,8 +178,8 @@ object CatalogoAulasWhatsApp {
             passos = listOf(
                 Passo(
                     id = "wpp5_p1",
-                    instrucao = "Toque na conversa da Maria para começar.",
-                    elementoAlvoId = "conversa_maria"
+                    instrucao = "Toque na conversa do Pedro para começar.",
+                    elementoAlvoId = "conversa_pedro"
                 ),
                 Passo(
                     id = "wpp5_p2",
@@ -227,8 +227,8 @@ object CatalogoAulasWhatsApp {
             passos = listOf(
                 Passo(
                     id = "wpp6_p1",
-                    instrucao = "Toque na conversa da Maria para começar.",
-                    elementoAlvoId = "conversa_maria"
+                    instrucao = "Toque na conversa do Pedro para começar.",
+                    elementoAlvoId = "conversa_pedro"
                 ),
                 Passo(
                     id = "wpp6_p2",
@@ -271,8 +271,8 @@ object CatalogoAulasWhatsApp {
             passos = listOf(
                 Passo(
                     id = "wpp7_p1",
-                    instrucao = "Toque na conversa da Maria para começar.",
-                    elementoAlvoId = "conversa_maria"
+                    instrucao = "Toque na conversa do Pedro para começar.",
+                    elementoAlvoId = "conversa_pedro"
                 ),
                 Passo(
                     id = "wpp7_p2",
@@ -310,8 +310,8 @@ object CatalogoAulasWhatsApp {
             passos = listOf(
                 Passo(
                     id = "wpp8_p1",
-                    instrucao = "Toque na conversa da Maria para começar.",
-                    elementoAlvoId = "conversa_maria"
+                    instrucao = "Toque na conversa do Pedro para começar.",
+                    elementoAlvoId = "conversa_pedro"
                 ),
                 Passo(
                     id = "wpp8_p2",

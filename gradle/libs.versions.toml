@@ -15,6 +15,7 @@ mockk = "1.13.12"
 runtime = "1.11.0"
 lottie = "6.4.0"
 coil = "2.7.0"
+foundationLayout = "1.11.1"
 
 [libraries]
 # Core
@@ -52,6 +53,7 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+androidx-compose-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

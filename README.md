@@ -128,7 +128,7 @@ com.maisdigital.app/
 
 A peça central do projeto. Funciona assim:
 
-1. Cada elemento clicável da simulação recebe um `Modifier.alvoTutorial(id = "conversa_maria")`. Esse modifier registra a posição do elemento e captura cliques.
+1. Cada elemento clicável da simulação recebe um `Modifier.alvoTutorial(id = "conversa_pedro")`. Esse modifier registra a posição do elemento e captura cliques.
 2. Cada `Aula` é uma sequência de `Passo`s. Cada passo aponta para o `elementoAlvoId` que deve ser tocado.
 3. O `TutorialEngine` (Kotlin puro) recebe os cliques e decide:
    - Clique no alvo correto → avança para o próximo passo
