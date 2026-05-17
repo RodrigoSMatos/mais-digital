@@ -128,6 +128,20 @@ fun TelaChamadaVideoAtiva(
                 .alvoTutorial("area_principal_chamada")
         )
 
+        // Aviso "Fulano silenciou o microfone" — aparece se relevante
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .statusBarsPadding()
+                .padding(top = 80.dp),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            BalaoAviso(
+                texto = "$nomeOutraPessoa silenciou o microfone.",
+                modifier = Modifier.alvoTutorial("aviso_microfone_silenciado")
+            )
+        }
+
         // TOPO — Minimizar | Nome+Tempo | Adicionar pessoa
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -354,23 +368,35 @@ private fun Miniatura(
             Box(modifier = Modifier.fillMaxSize().background(corMini))
         }
 
-        if (cameraDesligada && !mostraOutra) {
-            // Avatar redondo quando câmera desligada
-            Box(
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFF607D8B)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(rotuloMini, color = Color.White, style = MaterialTheme.typography.headlineSmall)
+        when {
+            mostraOutra -> {
+                // Miniatura mostra Pedro Borba animado em cima do fundo de sala
+                PedroBorbaAnimado(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .requiredSize(width = 130.dp, height = 240.dp)
+                )
             }
-        } else {
-            Text(
-                text = if (mostraOutra) nomeOutraPessoa else "Você",
-                color = Color.White,
-                style = MaterialTheme.typography.bodyLarge
-            )
+            cameraDesligada -> {
+                // Avatar redondo quando sua câmera está desligada
+                Box(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(CircleShape)
+                        .background(Color(0xFF607D8B)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(rotuloMini, color = Color.White, style = MaterialTheme.typography.headlineSmall)
+                }
+            }
+            else -> {
+                // Modo normal com câmera ligada: rótulo "Você"
+                Text(
+                    text = "Você",
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
 
 
