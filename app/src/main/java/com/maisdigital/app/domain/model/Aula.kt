@@ -1,7 +1,7 @@
 package com.maisdigital.app.domain.model
 
 /**
- * Uma aula completa dentro de um módulo de app.
+ * Uma aula completa dentro de un módulo de app.
  *
  * [appId]       → liga a aula ao AppSimulado correspondente.
  * [ordem]       → posição na lista de aulas (1, 2, 3...).

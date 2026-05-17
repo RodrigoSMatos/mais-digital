@@ -15,8 +15,6 @@ import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaContatos
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaConversa
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaListaConversas
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaNovoContato
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 
 /**
  * Estado completo do simulador WhatsApp.
@@ -115,7 +113,7 @@ fun SimuladorWhatsApp(
 
 /**
  * Aplica ação quando um passo é CUMPRIDO (usuário clicou corretamente).
- * Aqui ficam os TOGGLES: ligar/desligar câmera, silenciar, etc.
+ * Aqui ficam os TOGGLES: ligar/desligar câmera, silenciar, alternar visualização etc.
  */
 private fun aplicarAcaoAoConfirmarPasso(atual: EstadoSim, passoId: String): EstadoSim {
     return when (passoId) {
@@ -126,7 +124,7 @@ private fun aplicarAcaoAoConfirmarPasso(atual: EstadoSim, passoId: String): Esta
         "btn_inverter_camera",
         "btn_inverter_camera_mini" -> atual.copy(cameraInvertida = !atual.cameraInvertida)
 
-        // Miniatura: clicar nela alterna visualização
+        // Miniatura: clicar nela alterna visualização (em qualquer aula)
         "miniatura_propria_camera" -> atual.copy(visualizacaoExpandida = true)
         "miniatura_outra_pessoa"   -> atual.copy(visualizacaoExpandida = false)
 

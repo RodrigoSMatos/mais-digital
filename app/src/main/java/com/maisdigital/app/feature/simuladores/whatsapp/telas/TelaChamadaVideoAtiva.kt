@@ -112,7 +112,6 @@ fun TelaChamadaVideoAtiva(
     compartilhandoTela: Boolean,
     tempoChamada: String,
     nomeOutraPessoa: String,
-    miniaturaInterativa: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -128,20 +127,6 @@ fun TelaChamadaVideoAtiva(
                 .fillMaxSize()
                 .alvoTutorial("area_principal_chamada")
         )
-
-        // Aviso "Fulano silenciou o microfone" — aparece se relevante
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(top = 80.dp),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            BalaoAviso(
-                texto = "$nomeOutraPessoa silenciou o microfone.",
-                modifier = Modifier.alvoTutorial("aviso_microfone_silenciado")
-            )
-        }
 
         // TOPO — Minimizar | Nome+Tempo | Adicionar pessoa
         Row(
@@ -203,25 +188,19 @@ fun TelaChamadaVideoAtiva(
             }
         }
 
-        // MINIATURA (canto inferior direito)
+        // MINIATURA (canto inferior direito) — sempre interativa,
+        // sempre alvo do tutorial
         Box(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = Dimensoes.espacoMedio, bottom = 110.dp)
         ) {
-            if (miniaturaInterativa) {
-                Miniatura(
-                    visualizacaoExpandida = visualizacaoExpandida,
-                    cameraDesligada = cameraDesligada,
-                    cameraInvertida = cameraInvertida,
-                    nomeOutraPessoa = nomeOutraPessoa
-                )
-            } else {
-                MiniaturaEstatica(
-                    cameraDesligada = cameraDesligada,
-                    nomeOutraPessoa = nomeOutraPessoa
-                )
-            }
+            Miniatura(
+                visualizacaoExpandida = visualizacaoExpandida,
+                cameraDesligada = cameraDesligada,
+                cameraInvertida = cameraInvertida,
+                nomeOutraPessoa = nomeOutraPessoa
+            )
         }
 
         // BARRA INFERIOR DE CONTROLES
@@ -412,41 +391,6 @@ private fun Miniatura(
                     icone = Icons.Filled.AutoFixHigh
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun MiniaturaEstatica(
-    cameraDesligada: Boolean,
-    nomeOutraPessoa: String   // mantido pela API mas não usado; remova se preferir
-) {
-    val largura = 100.dp
-    val altura = 150.dp
-
-    Box(
-        modifier = Modifier
-            .size(width = largura, height = altura)
-            .clip(RoundedCornerShape(12.dp))
-            .background(Color(0xFF1565C0)),   // azul fixo de "Você"
-        contentAlignment = Alignment.Center
-    ) {
-        if (cameraDesligada) {
-            Box(
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFF607D8B)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("R", color = Color.White, style = MaterialTheme.typography.headlineSmall)
-            }
-        } else {
-            Text(
-                text = "Você",
-                color = Color.White,
-                style = MaterialTheme.typography.bodyLarge
-            )
         }
     }
 }
