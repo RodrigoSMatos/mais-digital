@@ -51,6 +51,9 @@ fun TutorialScreen(
     }
 
     val alvoRectAtual = state?.elementoAlvoId?.let { alvos[it] }
+    val feedbackRectAtual = state?.let { s ->
+        s.aula.passos.getOrNull(s.indicePasso)?.elementoFeedbackId?.let { alvos[it] }
+    }
     val interactionFora = remember { MutableInteractionSource() }
 
     CompositionLocalProvider(
@@ -93,7 +96,8 @@ fun TutorialScreen(
                     progresso = s.progresso,
                     indicePasso = s.indicePasso,
                     totalPassos = s.totalPassos,
-                    alvoRect = alvoRectAtual
+                    alvoRect = alvoRectAtual,
+                    feedbackRect = feedbackRectAtual
                 )
             }
 

@@ -199,12 +199,14 @@ object CatalogoAulasWhatsApp {
                 Passo(
                     id = "wpp5_p5",
                     instrucao = "Agora toque no botão de inverter câmera para usar a câmera de trás.",
-                    elementoAlvoId = "btn_inverter_camera"
+                    elementoAlvoId = "btn_inverter_camera",
+                    elementoFeedbackId = "miniatura_propria_camera"
                 ),
                 Passo(
                     id = "wpp5_p6",
                     instrucao = "Toque novamente para voltar para a câmera da frente.",
-                    elementoAlvoId = "btn_inverter_camera"
+                    elementoAlvoId = "btn_inverter_camera",
+                    elementoFeedbackId = "miniatura_propria_camera"
                 ),
                 Passo(
                     id = "wpp5_p7",

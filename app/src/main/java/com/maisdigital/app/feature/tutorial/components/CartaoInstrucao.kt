@@ -2,7 +2,6 @@ package com.maisdigital.app.feature.tutorial.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -34,10 +33,14 @@ import com.maisdigital.app.core.ui.theme.Dimensoes
 /**
  * Cartão flutuante que mostra a instrução do passo atual.
  *
- * Posicionamento inteligente:
- *  - Por padrão fica na parte superior da tela.
- *  - Se o alvo está na parte superior, o cartão vai para a parte inferior.
- *  - Garante que NUNCA fica em cima do alvo.
+ * Posicionamento inteligente em TRÊS faixas (topo / meio / base):
+ *  - O cartão evita cobrir o ALVO (onde o usuário interage).
+ *  - O cartão também evita cobrir o FEEDBACK (onde o resultado aparece),
+ *    quando este é diferente do alvo. Ex.: tocar em "inverter câmera" (alvo
+ *    na barra inferior) com resultado visível na miniatura (feedback).
+ *  - Preferência de posição: TOPO → BASE → MEIO. O meio é o respiro extra
+ *    para quando alvo e feedback ocupam tanto a faixa de cima quanto a de
+ *    baixo (ou vice-versa).
  */
 @Composable
 fun CartaoInstrucao(
@@ -46,30 +49,41 @@ fun CartaoInstrucao(
     indicePasso: Int,
     totalPassos: Int,
     alvoRect: Rect?,
+    feedbackRect: Rect? = null,
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val density = LocalDensity.current
-        val alturaTelaDp = maxHeight
-        val alturaTelaPx = with(density) { alturaTelaDp.toPx() }
+        val alturaTelaPx = with(density) { maxHeight.toPx() }
 
-        // Calcula offset Y: se alvo está na metade de cima da tela,
-        // cartão fica embaixo; senão, cartão fica em cima.
+        // Altura estimada do cartão (usada para calcular a posição da base
+        // e a faixa que ele ocupa). Valor conservador que cobre 3-4 linhas.
+        val alturaCartaoPx = with(density) { 250.dp.toPx() }
+        val margemPx = with(density) { 32.dp.toPx() }
+
+        // Divide a tela em 3 faixas horizontais. Retorna 0 (topo), 1 (meio)
+        // ou 2 (base) para o centro vertical de um retângulo.
+        fun faixaDe(rect: Rect?): Int? {
+            if (rect == null) return null
+            val centroY = rect.center.y
+            return when {
+                centroY < alturaTelaPx / 3f       -> 0
+                centroY < alturaTelaPx * 2f / 3f  -> 1
+                else                              -> 2
+            }
+        }
+
+        val faixasOcupadas = setOfNotNull(faixaDe(alvoRect), faixaDe(feedbackRect))
+
+        // Escolhe a primeira faixa livre na ordem de preferência: topo, base, meio.
+        // Se todas estiverem ocupadas (caso raro), cai no topo como padrão seguro.
+        val faixaEscolhida = listOf(0, 2, 1).firstOrNull { it !in faixasOcupadas } ?: 0
+
         val offsetYDp = with(density) {
-            if (alvoRect == null) {
-                // Sem alvo: cartão fica na parte superior
-                32.dp.toPx().toDp()
-            } else {
-                val alvoCentroY = alvoRect.center.y
-                val ehAlvoNaMetadeDeCima = alvoCentroY < alturaTelaPx / 2f
-
-                if (ehAlvoNaMetadeDeCima) {
-                    // Alvo em cima → cartão na parte INFERIOR
-                    (alturaTelaPx - 250.dp.toPx() - 32.dp.toPx()).toDp()
-                } else {
-                    // Alvo embaixo → cartão na parte SUPERIOR
-                    32.dp.toPx().toDp()
-                }
+            when (faixaEscolhida) {
+                0 -> margemPx.toDp()                                              // topo
+                2 -> (alturaTelaPx - alturaCartaoPx - margemPx).toDp()            // base
+                else -> ((alturaTelaPx - alturaCartaoPx) / 2f).toDp()             // meio
             }
         }
 
