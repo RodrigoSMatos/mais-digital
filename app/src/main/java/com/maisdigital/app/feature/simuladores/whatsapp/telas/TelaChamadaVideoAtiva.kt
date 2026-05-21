@@ -20,8 +20,10 @@ import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.CallEnd
 import androidx.compose.material.icons.filled.CloseFullscreen
 import androidx.compose.material.icons.filled.FlipCameraIos
+import androidx.compose.material.icons.filled.Landscape
 import androidx.compose.material.icons.filled.MicOff
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.outlined.Videocam
@@ -390,12 +392,28 @@ private fun Miniatura(
                 }
             }
             else -> {
-                // Modo normal com câmera ligada: rótulo "Você"
-                Text(
-                    text = "Você",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                // Modo normal com câmera ligada. O ícone e o rótulo refletem
+                // qual câmera está ativa (feedback visual de inverter câmera):
+                //   frontal  → ícone de pessoa  + "Você"
+                //   traseira → ícone de paisagem + "Câmera de trás"
+                val iconeCamera = if (cameraInvertida) Icons.Filled.Landscape else Icons.Filled.Person
+                val rotuloCamera = if (cameraInvertida) "Câmera de trás" else "Você"
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = iconeCamera,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(36.dp)
+                    )
+                    Text(
+                        text = rotuloCamera,
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
         }
 
