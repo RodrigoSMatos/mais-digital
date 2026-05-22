@@ -1,11 +1,17 @@
 package com.maisdigital.app.feature.simuladores.whatsapp.telas
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,12 +25,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -130,30 +136,52 @@ fun TelaConversa(
             }
         }
 
-        // Barra inferior: campo + microfone OU campo + enviar
+        // Barra inferior: durante a gravação, troca o campo de texto por
+        // uma faixa de gravação (tempo + waveform animado de palitinhos).
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(Dimensoes.espacoPequeno)
         ) {
-            // Campo de texto
-            Box(
-                contentAlignment = Alignment.CenterStart,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(48.dp)
-                    .clip(RoundedCornerShape(24.dp))
-                    .background(Color.White)
-                    .padding(horizontal = Dimensoes.espacoMedio)
-                    .alvoTutorial("campo_mensagem")
-            ) {
-                Text(
-                    text = if (textoDigitado.isEmpty()) "Mensagem" else textoDigitado,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = if (textoDigitado.isEmpty()) CinzaIconeChat
-                    else MaterialTheme.colorScheme.onSurface
-                )
+            if (gravandoAudio) {
+                // Faixa de gravação no lugar do campo de texto
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(Color.White)
+                        .padding(horizontal = Dimensoes.espacoMedio)
+                ) {
+                    Text(
+                        text = "0:03",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
+                    WaveformGravacao(modifier = Modifier.weight(1f))
+                }
+            } else {
+                // Campo de texto normal
+                Box(
+                    contentAlignment = Alignment.CenterStart,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(Color.White)
+                        .padding(horizontal = Dimensoes.espacoMedio)
+                        .alvoTutorial("campo_mensagem")
+                ) {
+                    Text(
+                        text = if (textoDigitado.isEmpty()) "Mensagem" else textoDigitado,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = if (textoDigitado.isEmpty()) CinzaIconeChat
+                        else MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
@@ -162,6 +190,51 @@ fun TelaConversa(
             BotaoAcaoDireita(
                 textoDigitado = textoDigitado,
                 gravandoAudio = gravandoAudio
+            )
+        }
+    }
+}
+
+
+/**
+ * Waveform animado de gravação — barras verticais que sobem e descem
+ * continuamente, simulando captação de áudio ao vivo. Cada barra tem uma
+ * fase própria pra dar a sensação de movimento orgânico.
+ */
+@Composable
+private fun WaveformGravacao(modifier: Modifier = Modifier) {
+    // Alturas relativas base de cada barra (0.0 a 1.0). O padrão se repete
+    // pra preencher a largura disponível.
+    val alturasBase = listOf(
+        0.3f, 0.6f, 0.9f, 0.5f, 0.7f, 0.4f, 1.0f, 0.5f,
+        0.8f, 0.3f, 0.6f, 0.9f, 0.4f, 0.7f, 0.5f, 0.8f,
+        0.3f, 0.6f, 0.4f, 0.9f, 0.5f, 0.7f, 0.3f, 0.6f
+    )
+
+    val transicao = rememberInfiniteTransition(label = "waveform")
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        modifier = modifier.height(28.dp)
+    ) {
+        alturasBase.forEachIndexed { indice, alturaBase ->
+            // Cada barra anima com uma defasagem, criando movimento de "onda".
+            val fator by transicao.animateFloat(
+                initialValue = 0.4f,
+                targetValue = 1.0f,
+                animationSpec = infiniteRepeatable(
+                    animation = tween(durationMillis = 500 + (indice % 5) * 90),
+                    repeatMode = RepeatMode.Reverse
+                ),
+                label = "barra_$indice"
+            )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(alturaBase * fator)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(VerdeWhatsAppClaro)
             )
         }
     }
@@ -192,7 +265,7 @@ private fun BotaoAcaoDireita(
     ) {
         val icone = when {
             textoDigitado.isNotEmpty() -> Icons.Filled.Send
-            gravandoAudio -> Icons.Filled.Stop
+            gravandoAudio -> Icons.Filled.Send
             else -> Icons.Filled.Mic
         }
         Icon(

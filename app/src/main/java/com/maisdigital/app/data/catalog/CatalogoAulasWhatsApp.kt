@@ -110,7 +110,7 @@ object CatalogoAulasWhatsApp {
                 ),
                 Passo(
                     id = "wpp3_p2",
-                    instrucao = "Toque e segure o ícone do microfone para gravar.",
+                    instrucao = "Toque no ícone do microfone para gravar.",
                     elementoAlvoId = "btn_microfone"
                 ),
                 Passo(
