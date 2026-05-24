@@ -24,6 +24,8 @@ private data class EstadoSim(
     // Conversa
     val textoDigitado: String = "",
     val gravandoAudio: Boolean = false,
+    val audioPausado: Boolean = false,
+    val audiosEnviados: Int = 0,
 
     // Novo contato
     val nomeContatoDigitado: String = "",
@@ -93,6 +95,8 @@ fun SimuladorWhatsApp(
         TelaSimulada.CONVERSA        -> TelaConversa(
             textoDigitado = estado.textoDigitado,
             gravandoAudio = estado.gravandoAudio,
+            audioPausado = estado.audioPausado,
+            audiosEnviados = estado.audiosEnviados,
             modifier = modifier.fillMaxSize()
         )
         TelaSimulada.CHAMADA_VIDEO   -> TelaChamadaVideoAtiva(
@@ -134,6 +138,22 @@ private fun aplicarAcaoAoConfirmarPasso(atual: EstadoSim, passoId: String): Esta
         // Selecionar "Compartilhar tela" → abre diálogo
         "opcao_compartilhar_tela"  -> atual.copy(menuAberto = false, dialogCompartilharAberto = true)
 
+        // ----- Aula 3 (áudio) -----
+        // Tocar no microfone → começa a gravar
+        "btn_microfone"            -> atual.copy(gravandoAudio = true, audioPausado = false)
+        // Enviar áudio → para a gravação, conta +1 balão na conversa
+        "btn_enviar_audio"         -> atual.copy(
+            gravandoAudio = false,
+            audioPausado = false,
+            audiosEnviados = atual.audiosEnviados + 1
+        )
+        // Lixeira → descarta o áudio em gravação (não vira balão)
+        "btn_lixeira_audio"        -> atual.copy(gravandoAudio = false, audioPausado = false)
+        // Pausar → congela a gravação
+        "btn_pausar_audio"         -> atual.copy(audioPausado = true)
+        // Retomar → volta a gravar
+        "btn_retomar_audio"        -> atual.copy(audioPausado = false)
+
         // Aceitar → começa compartilhamento
         "btn_aceitar_compartilhamento" -> atual.copy(
             dialogCompartilharAberto = false,
@@ -172,6 +192,9 @@ private fun telaParaPasso(passoAtualId: String): TelaSimulada {
         "campo_mensagem",
         "btn_enviar_mensagem",
         "btn_microfone",
+        "btn_lixeira_audio",
+        "btn_pausar_audio",
+        "btn_retomar_audio",
         "btn_enviar_audio"         -> TelaSimulada.CONVERSA
 
         // Chamada: btn_microfone_chamada é o de silenciar
@@ -224,8 +247,17 @@ private fun aplicarAcaoAoEntrarNoPasso(atual: EstadoSim, passoId: String): Estad
         // ----- Aula 2 (mensagem)
         "btn_enviar_mensagem"    -> atual.copy(textoDigitado = "Oi Pedro! Tudo bem?")
 
-        // ----- Aula 3 (áudio)
-        "btn_enviar_audio"       -> atual.copy(gravandoAudio = true)
+        // ----- Aula 3 (áudio) -----
+        // Tocar no microfone: a tela precisa mostrar o microfone (NÃO gravando).
+        // A gravação só começa ao CONFIRMAR o clique.
+        "btn_microfone"          -> atual.copy(gravandoAudio = false, audioPausado = false)
+        // Lixeira e pausar: precisam estar gravando e NÃO pausado
+        "btn_lixeira_audio",
+        "btn_pausar_audio"       -> atual.copy(gravandoAudio = true, audioPausado = false)
+        // Retomar: precisa estar gravando e PAUSADO
+        "btn_retomar_audio"      -> atual.copy(gravandoAudio = true, audioPausado = true)
+        // Enviar áudio: precisa estar gravando e não pausado (estado de envio aplicado ao confirmar)
+        "btn_enviar_audio"       -> atual.copy(gravandoAudio = true, audioPausado = false)
 
         // ----- Aulas de chamada -----
         // Volta ao estado padrão da chamada quando o passo é apenas iniciar

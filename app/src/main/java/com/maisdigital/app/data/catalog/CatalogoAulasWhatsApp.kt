@@ -100,8 +100,8 @@ object CatalogoAulasWhatsApp {
             appId = CatalogoApps.ID_WHATSAPP,
             ordem = 3,
             titulo = "Enviar um áudio",
-            descricao = "Nesta aula você vai aprender a gravar e enviar " +
-                    "uma mensagem de voz.",
+            descricao = "Nesta aula você vai aprender a gravar, apagar e enviar " +
+                    "mensagens de voz, e também a pausar a gravação.",
             passos = listOf(
                 Passo(
                     id = "wpp3_p1",
@@ -110,12 +110,45 @@ object CatalogoAulasWhatsApp {
                 ),
                 Passo(
                     id = "wpp3_p2",
-                    instrucao = "Toque no ícone do microfone para gravar.",
+                    instrucao = "Toque no ícone do microfone para começar a gravar.",
                     elementoAlvoId = "btn_microfone"
                 ),
                 Passo(
                     id = "wpp3_p3",
-                    instrucao = "Solte o microfone para enviar o áudio.",
+                    instrucao = "Está gravando! Quando terminar, toque na setinha verde para enviar.",
+                    elementoAlvoId = "btn_enviar_audio"
+                ),
+                Passo(
+                    id = "wpp3_p4",
+                    instrucao = "Pronto, seu áudio foi enviado! Agora vamos aprender a apagar. " +
+                            "Toque no microfone para gravar de novo.",
+                    elementoAlvoId = "btn_microfone"
+                ),
+                Passo(
+                    id = "wpp3_p5",
+                    instrucao = "Mudou de ideia enquanto grava? Toque na lixeira para apagar " +
+                            "este áudio antes de enviar.",
+                    elementoAlvoId = "btn_lixeira_audio"
+                ),
+                Passo(
+                    id = "wpp3_p6",
+                    instrucao = "O áudio foi descartado. Agora toque no microfone para gravar " +
+                            "mais uma vez.",
+                    elementoAlvoId = "btn_microfone"
+                ),
+                Passo(
+                    id = "wpp3_p7",
+                    instrucao = "Para fazer uma pausa, toque no botão de pausar.",
+                    elementoAlvoId = "btn_pausar_audio"
+                ),
+                Passo(
+                    id = "wpp3_p8",
+                    instrucao = "A gravação está pausada. Toque no microfone para continuar gravando.",
+                    elementoAlvoId = "btn_retomar_audio"
+                ),
+                Passo(
+                    id = "wpp3_p9",
+                    instrucao = "Agora toque na setinha verde para enviar este áudio.",
                     elementoAlvoId = "btn_enviar_audio"
                 )
             )

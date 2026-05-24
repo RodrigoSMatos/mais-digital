@@ -18,12 +18,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Icon
@@ -46,19 +50,25 @@ import com.maisdigital.app.domain.tutorial.alvoTutorial
 
 
 /**
- * Tela de conversa aberta com a Pedro.
+ * Tela de conversa aberta com o Pedro.
  *
  * Alvos disponíveis (alguns só aparecem em momentos específicos):
  *  - "btn_chamada_video"   → ícone de câmera no header
  *  - "campo_mensagem"      → barra de digitação
- *  - "btn_microfone"       → ícone de microfone (modo "não gravando")
- *  - "btn_enviar_audio"    → ícone de stop (modo "gravando")
- *  - "btn_enviar_mensagem" → ícone de avião (quando há texto)
+ *  - "btn_microfone"       → microfone (modo "não gravando")
+ *  - "btn_enviar_mensagem" → avião (quando há texto digitado)
+ *  Durante a gravação (barra de gravação):
+ *  - "btn_lixeira_audio"   → apagar o áudio antes de enviar
+ *  - "btn_pausar_audio"    → pausar a gravação (vira microfone quando pausado)
+ *  - "btn_retomar_audio"   → retomar a gravação pausada
+ *  - "btn_enviar_audio"    → avião verde, envia o áudio
  */
 @Composable
 fun TelaConversa(
     textoDigitado: String,
     gravandoAudio: Boolean,
+    audioPausado: Boolean = false,
+    audiosEnviados: Int = 0,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -134,36 +144,32 @@ fun TelaConversa(
                 Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
                 BolhaEnviada(textoDigitado)
             }
+
+            // Cada áudio enviado vira um balão de registro na conversa.
+            repeat(audiosEnviados) {
+                Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
+                BolhaAudioEnviada(duracao = "0:05")
+            }
         }
 
-        // Barra inferior: durante a gravação, troca o campo de texto por
-        // uma faixa de gravação (tempo + waveform animado de palitinhos).
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Dimensoes.espacoPequeno)
-        ) {
-            if (gravandoAudio) {
-                // Faixa de gravação no lugar do campo de texto
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(48.dp)
-                        .clip(RoundedCornerShape(24.dp))
-                        .background(Color.White)
-                        .padding(horizontal = Dimensoes.espacoMedio)
-                ) {
-                    Text(
-                        text = "0:03",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
-                    WaveformGravacao(modifier = Modifier.weight(1f))
-                }
-            } else {
+        // Barra inferior. Três modos:
+        //  - Não gravando: campo de texto + botão microfone/enviar
+        //  - Gravando: lixeira | (tempo + waveform animado) | pausa | avião
+        //  - Pausado: lixeira | (tempo + waveform congelado) | microfone | avião
+        if (gravandoAudio) {
+            BarraGravacao(
+                audioPausado = audioPausado,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimensoes.espacoPequeno)
+            )
+        } else {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimensoes.espacoPequeno)
+            ) {
                 // Campo de texto normal
                 Box(
                     contentAlignment = Alignment.CenterStart,
@@ -182,15 +188,12 @@ fun TelaConversa(
                         else MaterialTheme.colorScheme.onSurface
                     )
                 }
+
+                Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
+
+                // Botão microfone (ou enviar mensagem, quando há texto)
+                BotaoAcaoDireita(textoDigitado = textoDigitado)
             }
-
-            Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
-
-            // Botão direito: muda conforme contexto
-            BotaoAcaoDireita(
-                textoDigitado = textoDigitado,
-                gravandoAudio = gravandoAudio
-            )
         }
     }
 }
@@ -241,10 +244,107 @@ private fun WaveformGravacao(modifier: Modifier = Modifier) {
 }
 
 
+/**
+ * Barra exibida durante a gravação de áudio. Layout fiel ao WhatsApp:
+ *   lixeira | (tempo + waveform) | pausar-ou-microfone | enviar (avião)
+ *
+ * - Gravando (não pausado): waveform ANIMA, botão central é PAUSA.
+ * - Pausado: waveform CONGELA, botão central é MICROFONE (retomar).
+ */
+@Composable
+private fun BarraGravacao(
+    audioPausado: Boolean,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+    ) {
+        // Lixeira (apagar áudio antes de enviar)
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(48.dp)
+                .alvoTutorial("btn_lixeira_audio")
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Delete,
+                contentDescription = "Apagar áudio",
+                tint = CinzaIconeChat,
+                modifier = Modifier.size(28.dp)
+            )
+        }
+
+        // Faixa central: tempo + waveform (animado ou congelado)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .weight(1f)
+                .height(48.dp)
+                .clip(RoundedCornerShape(24.dp))
+                .background(Color.White)
+                .padding(horizontal = Dimensoes.espacoMedio)
+        ) {
+            Text(
+                text = "0:03",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
+            if (audioPausado) {
+                // Congelado: usa o waveform estático
+                WaveformEstatico(modifier = Modifier.weight(1f, fill = false))
+            } else {
+                WaveformGravacao(modifier = Modifier.weight(1f))
+            }
+        }
+
+        Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
+
+        // Botão central de controle: pausa (gravando) ou microfone (pausado)
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+                .then(
+                    if (audioPausado) Modifier.alvoTutorial("btn_retomar_audio")
+                    else Modifier.alvoTutorial("btn_pausar_audio")
+                )
+        ) {
+            Icon(
+                imageVector = if (audioPausado) Icons.Filled.Mic else Icons.Filled.Pause,
+                contentDescription = if (audioPausado) "Continuar gravando" else "Pausar",
+                tint = Color(0xFFE53935),  // vermelho
+                modifier = Modifier.size(32.dp)
+            )
+        }
+
+        Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
+
+        // Enviar (avião verde)
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape)
+                .background(VerdeWhatsAppClaro)
+                .alvoTutorial("btn_enviar_audio")
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Send,
+                contentDescription = "Enviar áudio",
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+    }
+}
+
+
 @Composable
 private fun BotaoAcaoDireita(
-    textoDigitado: String,
-    gravandoAudio: Boolean
+    textoDigitado: String
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -253,23 +353,14 @@ private fun BotaoAcaoDireita(
             .clip(CircleShape)
             .background(VerdeWhatsAppClaro)
             .then(
-                when {
-                    textoDigitado.isNotEmpty() ->
-                        Modifier.alvoTutorial("btn_enviar_mensagem")
-                    gravandoAudio ->
-                        Modifier.alvoTutorial("btn_enviar_audio")
-                    else ->
-                        Modifier.alvoTutorial("btn_microfone")
-                }
+                if (textoDigitado.isNotEmpty())
+                    Modifier.alvoTutorial("btn_enviar_mensagem")
+                else
+                    Modifier.alvoTutorial("btn_microfone")
             )
     ) {
-        val icone = when {
-            textoDigitado.isNotEmpty() -> Icons.Filled.Send
-            gravandoAudio -> Icons.Filled.Send
-            else -> Icons.Filled.Mic
-        }
         Icon(
-            imageVector = icone,
+            imageVector = if (textoDigitado.isNotEmpty()) Icons.Filled.Send else Icons.Filled.Mic,
             contentDescription = null,
             tint = Color.White,
             modifier = Modifier.size(24.dp)
@@ -304,6 +395,72 @@ private fun BolhaEnviada(texto: String) {
                 .padding(horizontal = Dimensoes.espacoMedio, vertical = Dimensoes.espacoPequeno)
         ) {
             Text(text = texto, style = MaterialTheme.typography.bodyLarge)
+        }
+    }
+}
+
+/**
+ * Balão de áudio enviado (registro na conversa após o envio).
+ * Mostra avatar + play + waveform estático + duração, fiel ao WhatsApp real.
+ */
+@Composable
+private fun BolhaAudioEnviada(duracao: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.End
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .widthIn(max = 280.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(VerdeBolhaMensagem)
+                .padding(horizontal = Dimensoes.espacoMedio, vertical = Dimensoes.espacoPequeno)
+        ) {
+            // Botão play
+            Icon(
+                imageVector = Icons.Filled.PlayArrow,
+                contentDescription = "Reproduzir áudio",
+                tint = CinzaIconeChat,
+                modifier = Modifier.size(32.dp)
+            )
+            Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
+            // Waveform estático (palitinhos parados)
+            WaveformEstatico(modifier = Modifier.weight(1f, fill = false))
+            Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
+            // Duração
+            Text(
+                text = duracao,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+/**
+ * Waveform estático (sem animação) — usado no balão de áudio já enviado.
+ * Barras de alturas fixas, representando o áudio gravado.
+ */
+@Composable
+private fun WaveformEstatico(modifier: Modifier = Modifier) {
+    val alturas = listOf(
+        0.4f, 0.7f, 1.0f, 0.5f, 0.8f, 0.3f, 0.6f, 0.9f,
+        0.4f, 0.7f, 0.5f, 1.0f, 0.6f, 0.3f, 0.8f, 0.5f
+    )
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        modifier = modifier.height(24.dp)
+    ) {
+        alturas.forEach { altura ->
+            Box(
+                modifier = Modifier
+                    .width(3.dp)
+                    .fillMaxHeight(altura)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(CinzaIconeChat)
+            )
         }
     }
 }
