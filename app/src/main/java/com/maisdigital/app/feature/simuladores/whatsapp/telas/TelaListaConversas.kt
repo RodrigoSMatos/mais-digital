@@ -16,9 +16,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Update
@@ -41,7 +43,6 @@ import com.maisdigital.app.core.ui.theme.VerdeWhatsAppFAB
 import com.maisdigital.app.core.ui.theme.VerdeWhatsAppHeader
 import com.maisdigital.app.domain.tutorial.alvoTutorial
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 
 
@@ -92,6 +93,21 @@ fun TelaListaConversas(
                         tint = Color.White,
                         modifier = Modifier.size(28.dp)
                     )
+                    Spacer(modifier = Modifier.width(Dimensoes.espacoMedio))
+                    // Menu de 3 pontinhos
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(40.dp)
+                            .alvoTutorial("btn_menu_principal")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "Mais opções",
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
                 }
             }
 
@@ -112,6 +128,7 @@ fun TelaListaConversas(
                         .clip(RoundedCornerShape(22.dp))
                         .background(FundoBuscaWhatsApp)
                         .padding(horizontal = Dimensoes.espacoMedio)
+                        .alvoTutorial("barra_busca")
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Search,
@@ -121,7 +138,7 @@ fun TelaListaConversas(
                     )
                     Spacer(modifier = Modifier.width(Dimensoes.espacoPequeno))
                     Text(
-                        text = "Pesquise",
+                        text = "Pergunte à Meta AI ou pesquise",
                         style = MaterialTheme.typography.bodyMedium,
                         color = CinzaIconePequeno
                     )
@@ -130,15 +147,48 @@ fun TelaListaConversas(
 
             // Filtros (chips)
             Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = Dimensoes.espacoMedio)
             ) {
-                ChipFiltro(texto = "Todas", selecionado = true)
+                ChipFiltro(
+                    texto = "Todas",
+                    selecionado = true,
+                    modifier = Modifier.alvoTutorial("filtro_todas")
+                )
                 Spacer(modifier = Modifier.width(8.dp))
-                ChipFiltro(texto = "Não lidas")
+                ChipFiltro(
+                    texto = "Não lidas",
+                    modifier = Modifier.alvoTutorial("filtro_nao_lidas")
+                )
                 Spacer(modifier = Modifier.width(8.dp))
-                ChipFiltro(texto = "Grupos")
+                ChipFiltro(
+                    texto = "Favoritos",
+                    modifier = Modifier.alvoTutorial("filtro_favoritos")
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                ChipFiltro(
+                    texto = "Grupos",
+                    modifier = Modifier.alvoTutorial("filtro_grupos")
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                // Botão "+" (adicionar filtro)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(FundoBuscaWhatsApp)
+                        .alvoTutorial("filtro_adicionar")
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = "Adicionar filtro",
+                        tint = CinzaIconePequeno,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(Dimensoes.espacoPequeno))
@@ -202,10 +252,14 @@ fun TelaListaConversas(
 }
 
 @Composable
-private fun ChipFiltro(texto: String, selecionado: Boolean = false) {
+private fun ChipFiltro(
+    texto: String,
+    selecionado: Boolean = false,
+    modifier: Modifier = Modifier
+) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier
+        modifier = modifier
             .height(32.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(if (selecionado) Color(0xFFD9FDD3) else FundoBuscaWhatsApp)
@@ -282,15 +336,36 @@ private fun BarraInferior() {
             .background(Color.White)
             .padding(top = 8.dp)
     ) {
-        AbaInferior(icone = Icons.Filled.Chat, texto = "Conversas", selecionado = true)
-        AbaInferior(icone = Icons.Filled.Update, texto = "Atualizações")
-        AbaInferior(icone = Icons.Filled.Call, texto = "Ligações")
+        AbaInferior(
+            icone = Icons.Filled.Chat,
+            texto = "Conversas",
+            selecionado = true,
+            modifier = Modifier.alvoTutorial("aba_conversas")
+        )
+        AbaInferior(
+            icone = Icons.Filled.Update,
+            texto = "Atualizações",
+            modifier = Modifier.alvoTutorial("aba_atualizacoes")
+        )
+        AbaInferior(
+            icone = Icons.Filled.Call,
+            texto = "Ligações",
+            modifier = Modifier.alvoTutorial("aba_ligacoes")
+        )
     }
 }
 
 @Composable
-private fun AbaInferior(icone: ImageVector, texto: String, selecionado: Boolean = false) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+private fun AbaInferior(
+    icone: ImageVector,
+    texto: String,
+    selecionado: Boolean = false,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+    ) {
         // Pílula com fundo verde claro APENAS na aba selecionada
         Box(
             contentAlignment = Alignment.Center,
