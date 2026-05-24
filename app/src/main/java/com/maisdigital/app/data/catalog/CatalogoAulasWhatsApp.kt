@@ -13,6 +13,7 @@ import com.maisdigital.app.domain.model.Passo
  */
 object CatalogoAulasWhatsApp {
 
+    const val ID_TELA_PRINCIPAL = "wpp_tela_principal"
     const val ID_AULA_1 = "wpp_aula_1"
     const val ID_AULA_2 = "wpp_aula_2"
     const val ID_AULA_3 = "wpp_aula_3"
@@ -25,12 +26,86 @@ object CatalogoAulasWhatsApp {
     val aulas: List<Aula> = listOf(
 
         // ==================================================================
+        // AULA — Conhecendo a tela principal (reconhecimento da interface)
+        // ==================================================================
+        Aula(
+            id = ID_TELA_PRINCIPAL,
+            appId = CatalogoApps.ID_WHATSAPP,
+            ordem = 1,
+            titulo = "Conhecendo a tela principal",
+            descricao = "Antes de começar, vamos conhecer cada parte da tela " +
+                    "principal do WhatsApp. É só olhar e tocar para avançar.",
+            passos = listOf(
+                Passo(
+                    id = "wpptp_p1",
+                    instrucao = "Esta é a barra de busca. Aqui você procura conversas " +
+                            "ou pessoas. Toque para continuar.",
+                    elementoAlvoId = "barra_busca"
+                ),
+                Passo(
+                    id = "wpptp_p2",
+                    instrucao = "Estes são os filtros. 'Todas' mostra todas as suas " +
+                            "conversas. Toque para continuar.",
+                    elementoAlvoId = "filtro_todas"
+                ),
+                Passo(
+                    id = "wpptp_p3",
+                    instrucao = "'Não lidas' mostra só as conversas que você ainda " +
+                            "não abriu. Toque para continuar.",
+                    elementoAlvoId = "filtro_nao_lidas"
+                ),
+                Passo(
+                    id = "wpptp_p4",
+                    instrucao = "'Favoritos' mostra as pessoas que você marcou como " +
+                            "favoritas. Toque para continuar.",
+                    elementoAlvoId = "filtro_favoritos"
+                ),
+                Passo(
+                    id = "wpptp_p5",
+                    instrucao = "'Grupos' mostra apenas as conversas em grupo. " +
+                            "Toque para continuar.",
+                    elementoAlvoId = "filtro_grupos"
+                ),
+                Passo(
+                    id = "wpptp_p6",
+                    instrucao = "Aqui embaixo ficam as abas. 'Conversas' é onde você " +
+                            "está agora. Toque para continuar.",
+                    elementoAlvoId = "aba_conversas"
+                ),
+                Passo(
+                    id = "wpptp_p7",
+                    instrucao = "'Atualizações' mostra os status das pessoas. " +
+                            "Toque para continuar.",
+                    elementoAlvoId = "aba_atualizacoes"
+                ),
+                Passo(
+                    id = "wpptp_p8",
+                    instrucao = "'Ligações' mostra suas chamadas recentes. " +
+                            "Toque para continuar.",
+                    elementoAlvoId = "aba_ligacoes"
+                ),
+                Passo(
+                    id = "wpptp_p9",
+                    instrucao = "Os três pontinhos abrem mais opções e configurações. " +
+                            "Toque para continuar.",
+                    elementoAlvoId = "btn_menu_principal"
+                ),
+                Passo(
+                    id = "wpptp_p10",
+                    instrucao = "E este botão verde inicia uma nova conversa. Pronto! " +
+                            "Você conheceu a tela principal.",
+                    elementoAlvoId = "btn_nova_conversa"
+                )
+            )
+        ),
+
+        // ==================================================================
         // AULA 1 — Adicionar um contato
         // ==================================================================
         Aula(
             id = ID_AULA_1,
             appId = CatalogoApps.ID_WHATSAPP,
-            ordem = 1,
+            ordem = 2,
             titulo = "Adicionar um contato",
             descricao = "Nesta aula você vai aprender a adicionar uma pessoa nova " +
                     "na sua lista de contatos do WhatsApp.",
@@ -69,7 +144,7 @@ object CatalogoAulasWhatsApp {
         Aula(
             id = ID_AULA_2,
             appId = CatalogoApps.ID_WHATSAPP,
-            ordem = 2,
+            ordem = 3,
             titulo = "Enviar uma mensagem",
             descricao = "Nesta aula você vai aprender a abrir uma conversa " +
                     "e enviar uma mensagem de texto.",
@@ -98,7 +173,7 @@ object CatalogoAulasWhatsApp {
         Aula(
             id = ID_AULA_3,
             appId = CatalogoApps.ID_WHATSAPP,
-            ordem = 3,
+            ordem = 4,
             titulo = "Enviar um áudio",
             descricao = "Nesta aula você vai aprender a gravar, apagar e enviar " +
                     "mensagens de voz, e também a pausar a gravação.",
@@ -160,7 +235,7 @@ object CatalogoAulasWhatsApp {
         Aula(
             id = ID_AULA_4,
             appId = CatalogoApps.ID_WHATSAPP,
-            ordem = 4,
+            ordem = 9,
             titulo = "Conhecendo a chamada de vídeo",
             descricao = "Nesta aula você vai aprender a iniciar uma chamada " +
                     "e a reconhecer cada parte da tela.",
@@ -204,7 +279,7 @@ object CatalogoAulasWhatsApp {
         Aula(
             id = ID_AULA_5,
             appId = CatalogoApps.ID_WHATSAPP,
-            ordem = 5,
+            ordem = 10,
             titulo = "Controlar sua câmera",
             descricao = "Nesta aula você vai aprender a desligar e ligar sua câmera, " +
                     "e a trocar entre a câmera da frente e a de trás.",
@@ -255,7 +330,7 @@ object CatalogoAulasWhatsApp {
         Aula(
             id = ID_AULA_6,
             appId = CatalogoApps.ID_WHATSAPP,
-            ordem = 6,
+            ordem = 11,
             titulo = "Controlar o microfone e o som",
             descricao = "Nesta aula você vai aprender a silenciar seu microfone " +
                     "e a ativar o viva voz.",
@@ -299,7 +374,7 @@ object CatalogoAulasWhatsApp {
         Aula(
             id = ID_AULA_7,
             appId = CatalogoApps.ID_WHATSAPP,
-            ordem = 7,
+            ordem = 12,
             titulo = "Expandir a imagem da chamada",
             descricao = "Nesta aula você vai aprender a alternar entre ver " +
                     "a outra pessoa em grande e ver você mesmo em grande.",
@@ -338,7 +413,7 @@ object CatalogoAulasWhatsApp {
         Aula(
             id = ID_AULA_8,
             appId = CatalogoApps.ID_WHATSAPP,
-            ordem = 8,
+            ordem = 13,
             titulo = "Menu e compartilhar tela",
             descricao = "Nesta aula você vai conhecer o menu de opções extras " +
                     "e aprender a compartilhar sua tela com a outra pessoa.",

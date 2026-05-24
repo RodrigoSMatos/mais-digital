@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddComment
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Chat
@@ -157,38 +156,21 @@ fun TelaListaConversas(
                     selecionado = true,
                     modifier = Modifier.alvoTutorial("filtro_todas")
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(6.dp))
                 ChipFiltro(
                     texto = "Não lidas",
                     modifier = Modifier.alvoTutorial("filtro_nao_lidas")
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(6.dp))
                 ChipFiltro(
                     texto = "Favoritos",
                     modifier = Modifier.alvoTutorial("filtro_favoritos")
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(6.dp))
                 ChipFiltro(
                     texto = "Grupos",
                     modifier = Modifier.alvoTutorial("filtro_grupos")
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                // Botão "+" (adicionar filtro)
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(FundoBuscaWhatsApp)
-                        .alvoTutorial("filtro_adicionar")
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Adicionar filtro",
-                        tint = CinzaIconePequeno,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
             }
 
             Spacer(modifier = Modifier.height(Dimensoes.espacoPequeno))
@@ -263,12 +245,13 @@ private fun ChipFiltro(
             .height(32.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(if (selecionado) Color(0xFFD9FDD3) else FundoBuscaWhatsApp)
-            .padding(horizontal = 16.dp, vertical = 6.dp)
+            .padding(horizontal = 10.dp, vertical = 6.dp)
     ) {
         Text(
             text = texto,
             style = MaterialTheme.typography.bodyMedium,
-            color = if (selecionado) Color(0xFF075E54) else MaterialTheme.colorScheme.onSurface
+            color = if (selecionado) Color(0xFF075E54) else MaterialTheme.colorScheme.onSurface,
+            maxLines = 1
         )
     }
 }
