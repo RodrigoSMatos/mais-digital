@@ -13,6 +13,7 @@ import com.maisdigital.app.domain.tutorial.LocalTutorialEngine
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaChamadaVideoAtiva
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaContatos
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaConversa
+import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaInfoContato
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaListaConversas
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaNovoContato
 
@@ -26,6 +27,7 @@ private data class EstadoSim(
     val gravandoAudio: Boolean = false,
     val audioPausado: Boolean = false,
     val audiosEnviados: Int = 0,
+    val menuConversaAberto: Boolean = false,
 
     // Novo contato
     val nomeContatoDigitado: String = "",
@@ -97,8 +99,10 @@ fun SimuladorWhatsApp(
             gravandoAudio = estado.gravandoAudio,
             audioPausado = estado.audioPausado,
             audiosEnviados = estado.audiosEnviados,
+            menuConversaAberto = estado.menuConversaAberto,
             modifier = modifier.fillMaxSize()
         )
+        TelaSimulada.INFO_CONTATO    -> TelaInfoContato(modifier.fillMaxSize())
         TelaSimulada.CHAMADA_VIDEO   -> TelaChamadaVideoAtiva(
             cameraDesligada = estado.cameraDesligada,
             microfoneSilenciado = estado.microfoneSilenciado,
@@ -135,6 +139,11 @@ private fun aplicarAcaoAoConfirmarPasso(atual: EstadoSim, passoId: String): Esta
         // Abrir menu de opções
         "btn_tres_pontinhos"       -> atual.copy(menuAberto = true)
 
+        // ----- Aula 5: tocar nos 3 pontinhos da conversa abre o menu
+        "conversa_menu"            -> atual.copy(menuConversaAberto = true)
+        // Selecionar "Ver contato" fecha o menu (a tela já vai virar info)
+        "menu_ver_contato"         -> atual.copy(menuConversaAberto = false)
+
         // Selecionar "Compartilhar tela" → abre diálogo
         "opcao_compartilhar_tela"  -> atual.copy(menuAberto = false, dialogCompartilharAberto = true)
 
@@ -170,6 +179,7 @@ private enum class TelaSimulada {
     CONTATOS,
     NOVO_CONTATO,
     CONVERSA,
+    INFO_CONTATO,
     CHAMADA_VIDEO
 }
 
@@ -195,7 +205,24 @@ private fun telaParaPasso(passoAtualId: String): TelaSimulada {
         "btn_lixeira_audio",
         "btn_pausar_audio",
         "btn_retomar_audio",
-        "btn_enviar_audio"         -> TelaSimulada.CONVERSA
+        "btn_enviar_audio",
+            // Aula 5: formas de abrir info do contato a partir da conversa
+        "conversa_foto_contato",
+        "conversa_nome_contato",
+        "conversa_menu",
+        "menu_ver_contato"         -> TelaSimulada.CONVERSA
+
+        // Aula 5: tela de informações do contato
+        "info_voltar",
+        "info_avatar",
+        "info_nome",
+        "info_btn_mensagem",
+        "info_btn_ligar",
+        "info_btn_video",
+        "info_btn_buscar",
+        "info_midia",
+        "info_notificacoes",
+        "info_bloquear"            -> TelaSimulada.INFO_CONTATO
 
         // Chamada: btn_microfone_chamada é o de silenciar
         "btn_minimizar_chamada",
@@ -258,6 +285,14 @@ private fun aplicarAcaoAoEntrarNoPasso(atual: EstadoSim, passoId: String): Estad
         "btn_retomar_audio"      -> atual.copy(gravandoAudio = true, audioPausado = true)
         // Enviar áudio: precisa estar gravando e não pausado (estado de envio aplicado ao confirmar)
         "btn_enviar_audio"       -> atual.copy(gravandoAudio = true, audioPausado = false)
+
+        // ----- Aula 5 (abrir info do contato) -----
+        // Tocar nos 3 pontinhos: o menu NÃO pode estar aberto ainda
+        "conversa_foto_contato",
+        "conversa_nome_contato",
+        "conversa_menu"          -> atual.copy(menuConversaAberto = false)
+        // Tocar em "Ver contato": o menu PRECISA estar aberto
+        "menu_ver_contato"       -> atual.copy(menuConversaAberto = true)
 
         // ----- Aulas de chamada -----
         // Volta ao estado padrão da chamada quando o passo é apenas iniciar

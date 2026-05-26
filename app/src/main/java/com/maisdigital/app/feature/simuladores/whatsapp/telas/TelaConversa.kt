@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Send
@@ -69,6 +70,7 @@ fun TelaConversa(
     gravandoAudio: Boolean,
     audioPausado: Boolean = false,
     audiosEnviados: Int = 0,
+    menuConversaAberto: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -86,42 +88,70 @@ fun TelaConversa(
                 .background(VerdeWhatsAppHeader)
                 .windowInsetsPadding(androidx.compose.foundation.layout.WindowInsets.statusBars)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .padding(horizontal = Dimensoes.espacoMedio)
-            ) {
-                Box(
+            Box {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF00897B)),
-                    contentAlignment = Alignment.Center
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .padding(horizontal = Dimensoes.espacoMedio)
                 ) {
-                    Text("P", color = Color.White,
-                        style = MaterialTheme.typography.titleMedium)
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF00897B))
+                            .alvoTutorial("conversa_foto_contato"),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("P", color = Color.White,
+                            style = MaterialTheme.typography.titleMedium)
+                    }
+                    Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
+                    Text(
+                        text = "Pedro Borba",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.White,
+                        modifier = Modifier
+                            .weight(1f)
+                            .alvoTutorial("conversa_nome_contato")
+                    )
+                    // Ícone de chamada de vídeo
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .alvoTutorial("btn_chamada_video")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Videocam,
+                            contentDescription = "Chamada de vídeo",
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                    // Ícone de 3 pontinhos (menu da conversa)
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .size(48.dp)
+                            .alvoTutorial("conversa_menu")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.MoreVert,
+                            contentDescription = "Mais opções",
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
                 }
-                Spacer(modifier = Modifier.size(Dimensoes.espacoPequeno))
-                Text(
-                    text = "Pedro Borba",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = Color.White,
-                    modifier = Modifier.weight(1f)
-                )
-                // Ícone de chamada de vídeo
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .alvoTutorial("btn_chamada_video")
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Videocam,
-                        contentDescription = "Chamada de vídeo",
-                        tint = Color.White,
-                        modifier = Modifier.size(28.dp)
+
+                // Menu suspenso do botão 3 pontinhos (abre na aula de info do contato)
+                if (menuConversaAberto) {
+                    MenuConversa(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(top = 4.dp, end = 4.dp)
                     )
                 }
             }
@@ -435,6 +465,48 @@ private fun BolhaAudioEnviada(duracao: String) {
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
+    }
+}
+
+/**
+ * Menu suspenso que abre ao tocar nos 3 pontinhos do header da conversa.
+ * No tutorial, mostra a opção "Ver contato" (alvo: menu_ver_contato), que
+ * é uma das formas de abrir as informações do contato.
+ */
+@Composable
+private fun MenuConversa(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .widthIn(min = 200.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.White)
+            .padding(vertical = Dimensoes.espacoPequeno)
+    ) {
+        ItemMenuConversa(
+            texto = "Ver contato",
+            modifier = Modifier.alvoTutorial("menu_ver_contato")
+        )
+        ItemMenuConversa(texto = "Mídia, links e docs")
+        ItemMenuConversa(texto = "Buscar")
+        ItemMenuConversa(texto = "Silenciar notificações")
+    }
+}
+
+@Composable
+private fun ItemMenuConversa(
+    texto: String,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimensoes.espacoMedio, vertical = Dimensoes.espacoMedio)
+    ) {
+        Text(
+            text = texto,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
     }
 }
 

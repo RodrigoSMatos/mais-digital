@@ -42,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maisdigital.app.core.ui.theme.Dimensoes
 import com.maisdigital.app.domain.tutorial.alvoTutorial
@@ -81,7 +80,6 @@ private val VerdeWhatsApp = Color(0xFF075E54)
 private val VerdePedro = Color(0xFF00897B)
 private val CinzaIcone = Color(0xFF667781)
 
-
 @Composable
 fun TelaInfoContato(
     modifier: Modifier = Modifier
@@ -101,12 +99,19 @@ fun TelaInfoContato(
                 .height(56.dp)
                 .padding(horizontal = Dimensoes.espacoMedio)
         ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Voltar",
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(28.dp)
-            )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(40.dp)
+                    .alvoTutorial("info_voltar")
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Voltar",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
             Spacer(modifier = Modifier.weight(1f))
             Icon(
                 imageVector = Icons.Filled.QrCode,

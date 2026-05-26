@@ -17,6 +17,7 @@ object CatalogoAulasWhatsApp {
     const val ID_AULA_1 = "wpp_aula_1"
     const val ID_AULA_2 = "wpp_aula_2"
     const val ID_AULA_3 = "wpp_aula_3"
+    const val ID_INFO_CONTATO = "wpp_info_contato"
     const val ID_AULA_4 = "wpp_aula_4"
     const val ID_AULA_5 = "wpp_aula_5"
     const val ID_AULA_6 = "wpp_aula_6"
@@ -225,6 +226,67 @@ object CatalogoAulasWhatsApp {
                     id = "wpp3_p9",
                     instrucao = "Agora toque na setinha verde para enviar este áudio.",
                     elementoAlvoId = "btn_enviar_audio"
+                )
+            )
+        ),
+
+        // ==================================================================
+        // AULA — Abrir informações do contato (vários caminhos)
+        // ==================================================================
+        Aula(
+            id = ID_INFO_CONTATO,
+            appId = CatalogoApps.ID_WHATSAPP,
+            ordem = 5,
+            titulo = "Abrir informações do contato",
+            descricao = "Existem várias formas de ver as informações de um contato. " +
+                    "Nesta aula você vai aprender três delas — todas levam ao mesmo lugar.",
+            passos = listOf(
+                Passo(
+                    id = "wppic_p1",
+                    instrucao = "Toque na conversa do Pedro para abri-la.",
+                    elementoAlvoId = "conversa_pedro"
+                ),
+                Passo(
+                    id = "wppic_p2",
+                    instrucao = "A primeira forma é tocar na foto do contato, " +
+                            "aqui em cima.",
+                    elementoAlvoId = "conversa_foto_contato"
+                ),
+                Passo(
+                    id = "wppic_p3",
+                    instrucao = "Estas são as informações do Pedro! Toque na seta " +
+                            "para voltar à conversa.",
+                    elementoAlvoId = "info_voltar"
+                ),
+                Passo(
+                    id = "wppic_p4",
+                    instrucao = "Outra forma é tocar no nome do contato, " +
+                            "ao lado da foto.",
+                    elementoAlvoId = "conversa_nome_contato"
+                ),
+                Passo(
+                    id = "wppic_p5",
+                    instrucao = "Chegou no mesmo lugar! Toque na seta para " +
+                            "voltar mais uma vez.",
+                    elementoAlvoId = "info_voltar"
+                ),
+                Passo(
+                    id = "wppic_p6",
+                    instrucao = "A terceira forma é pelos três pontinhos. " +
+                            "Toque neles.",
+                    elementoAlvoId = "conversa_menu"
+                ),
+                Passo(
+                    id = "wppic_p7",
+                    instrucao = "Agora toque em 'Ver contato'.",
+                    elementoAlvoId = "menu_ver_contato"
+                ),
+                Passo(
+                    id = "wppic_p8",
+                    instrucao = "Pronto! Você aprendeu três formas de abrir as " +
+                            "informações do mesmo contato: pela foto, pelo nome e " +
+                            "pelos três pontinhos.",
+                    elementoAlvoId = "info_nome"
                 )
             )
         ),
