@@ -13,6 +13,7 @@ import com.maisdigital.app.domain.tutorial.LocalTutorialEngine
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaChamadaVideoAtiva
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaContatos
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaConversa
+import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaGaleriaMidia
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaInfoContato
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaListaConversas
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaNovoContato
@@ -28,6 +29,7 @@ private data class EstadoSim(
     val audioPausado: Boolean = false,
     val audiosEnviados: Int = 0,
     val menuConversaAberto: Boolean = false,
+    val abaGaleria: String = "midia",
 
     // Novo contato
     val nomeContatoDigitado: String = "",
@@ -103,6 +105,10 @@ fun SimuladorWhatsApp(
             modifier = modifier.fillMaxSize()
         )
         TelaSimulada.INFO_CONTATO    -> TelaInfoContato(modifier.fillMaxSize())
+        TelaSimulada.GALERIA_MIDIA   -> TelaGaleriaMidia(
+            abaAtiva = estado.abaGaleria,
+            modifier = modifier.fillMaxSize()
+        )
         TelaSimulada.CHAMADA_VIDEO   -> TelaChamadaVideoAtiva(
             cameraDesligada = estado.cameraDesligada,
             microfoneSilenciado = estado.microfoneSilenciado,
@@ -144,6 +150,11 @@ private fun aplicarAcaoAoConfirmarPasso(atual: EstadoSim, passoId: String): Esta
         // Selecionar "Ver contato" fecha o menu (a tela já vai virar info)
         "menu_ver_contato"         -> atual.copy(menuConversaAberto = false)
 
+        // ----- Aula 6: tocar em cada aba troca o conteúdo da galeria
+        "galeria_aba_midia"        -> atual.copy(abaGaleria = "midia")
+        "galeria_aba_docs"         -> atual.copy(abaGaleria = "docs")
+        "galeria_aba_links"        -> atual.copy(abaGaleria = "links")
+
         // Selecionar "Compartilhar tela" → abre diálogo
         "opcao_compartilhar_tela"  -> atual.copy(menuAberto = false, dialogCompartilharAberto = true)
 
@@ -180,6 +191,7 @@ private enum class TelaSimulada {
     NOVO_CONTATO,
     CONVERSA,
     INFO_CONTATO,
+    GALERIA_MIDIA,
     CHAMADA_VIDEO
 }
 
@@ -223,6 +235,12 @@ private fun telaParaPasso(passoAtualId: String): TelaSimulada {
         "info_midia",
         "info_notificacoes",
         "info_bloquear"            -> TelaSimulada.INFO_CONTATO
+
+        // Aula 6: galeria de mídia (abas Mídia/Docs/Links)
+        "galeria_voltar",
+        "galeria_aba_midia",
+        "galeria_aba_docs",
+        "galeria_aba_links"        -> TelaSimulada.GALERIA_MIDIA
 
         // Chamada: btn_microfone_chamada é o de silenciar
         "btn_minimizar_chamada",
@@ -293,6 +311,10 @@ private fun aplicarAcaoAoEntrarNoPasso(atual: EstadoSim, passoId: String): Estad
         "conversa_menu"          -> atual.copy(menuConversaAberto = false)
         // Tocar em "Ver contato": o menu PRECISA estar aberto
         "menu_ver_contato"       -> atual.copy(menuConversaAberto = true)
+
+        // ----- Aula 6 (mídia, links e docs) -----
+        // Ao apontar a aba Mídia, a galeria começa nela
+        "galeria_aba_midia"      -> atual.copy(abaGaleria = "midia")
 
         // ----- Aulas de chamada -----
         // Volta ao estado padrão da chamada quando o passo é apenas iniciar

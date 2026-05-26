@@ -18,6 +18,7 @@ object CatalogoAulasWhatsApp {
     const val ID_AULA_2 = "wpp_aula_2"
     const val ID_AULA_3 = "wpp_aula_3"
     const val ID_INFO_CONTATO = "wpp_info_contato"
+    const val ID_MIDIA_CONTATO = "wpp_midia_contato"
     const val ID_AULA_4 = "wpp_aula_4"
     const val ID_AULA_5 = "wpp_aula_5"
     const val ID_AULA_6 = "wpp_aula_6"
@@ -287,6 +288,61 @@ object CatalogoAulasWhatsApp {
                             "informações do mesmo contato: pela foto, pelo nome e " +
                             "pelos três pontinhos.",
                     elementoAlvoId = "info_nome"
+                )
+            )
+        ),
+
+        // ==================================================================
+        // AULA — Mídia, links e documentos
+        // ==================================================================
+        Aula(
+            id = ID_MIDIA_CONTATO,
+            appId = CatalogoApps.ID_WHATSAPP,
+            ordem = 6,
+            titulo = "Mídia, links e documentos",
+            descricao = "Tudo o que você troca com uma pessoa fica guardado num só " +
+                    "lugar. Nesta aula você vai aprender a encontrar as fotos, os " +
+                    "documentos e os links compartilhados.",
+            passos = listOf(
+                Passo(
+                    id = "wppmc_p1",
+                    instrucao = "Toque na conversa do Pedro para abri-la.",
+                    elementoAlvoId = "conversa_pedro"
+                ),
+                Passo(
+                    id = "wppmc_p2",
+                    instrucao = "Toque nos três pontinhos para abrir o menu.",
+                    elementoAlvoId = "conversa_menu"
+                ),
+                Passo(
+                    id = "wppmc_p3",
+                    instrucao = "Toque em 'Ver contato' para abrir as informações.",
+                    elementoAlvoId = "menu_ver_contato"
+                ),
+                Passo(
+                    id = "wppmc_p4",
+                    instrucao = "Agora toque em 'Mídia, links e docs' para ver tudo " +
+                            "o que foi compartilhado.",
+                    elementoAlvoId = "info_midia"
+                ),
+                Passo(
+                    id = "wppmc_p5",
+                    instrucao = "Esta é a aba 'Mídia'. Aqui ficam as fotos e os " +
+                            "vídeos. Toque nela para ver.",
+                    elementoAlvoId = "galeria_aba_midia"
+                ),
+                Passo(
+                    id = "wppmc_p6",
+                    instrucao = "Agora toque em 'Docs'. Aqui ficam os documentos, " +
+                            "como PDFs e arquivos.",
+                    elementoAlvoId = "galeria_aba_docs"
+                ),
+                Passo(
+                    id = "wppmc_p7",
+                    instrucao = "Por fim, toque em 'Links'. Aqui ficam os endereços " +
+                            "de sites que foram enviados. Pronto, você já sabe onde " +
+                            "encontrar tudo!",
+                    elementoAlvoId = "galeria_aba_links"
                 )
             )
         ),
