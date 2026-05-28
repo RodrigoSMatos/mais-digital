@@ -19,6 +19,7 @@ object CatalogoAulasWhatsApp {
     const val ID_AULA_3 = "wpp_aula_3"
     const val ID_INFO_CONTATO = "wpp_info_contato"
     const val ID_MIDIA_CONTATO = "wpp_midia_contato"
+    const val ID_VER_TELEFONE = "wpp_ver_telefone"
     const val ID_AULA_4 = "wpp_aula_4"
     const val ID_AULA_5 = "wpp_aula_5"
     const val ID_AULA_6 = "wpp_aula_6"
@@ -343,6 +344,43 @@ object CatalogoAulasWhatsApp {
                             "de sites que foram enviados. Pronto, você já sabe onde " +
                             "encontrar tudo!",
                     elementoAlvoId = "galeria_aba_links"
+                )
+            )
+        ),
+
+        // ==================================================================
+        // AULA — Ver seu próprio número de telefone
+        // ==================================================================
+        Aula(
+            id = ID_VER_TELEFONE,
+            appId = CatalogoApps.ID_WHATSAPP,
+            ordem = 7,
+            titulo = "Ver seu próprio número de telefone",
+            descricao = "Esqueceu o seu número? Nesta aula você vai aprender a ver " +
+                    "o seu próprio número de telefone dentro do WhatsApp.",
+            passos = listOf(
+                Passo(
+                    id = "wppvt_p1",
+                    instrucao = "Toque nos três pontinhos, no canto de cima da tela, " +
+                            "para abrir o menu.",
+                    elementoAlvoId = "btn_menu_principal"
+                ),
+                Passo(
+                    id = "wppvt_p2",
+                    instrucao = "Agora toque em 'Configurações', no final do menu.",
+                    elementoAlvoId = "menu_principal_configuracoes"
+                ),
+                Passo(
+                    id = "wppvt_p3",
+                    instrucao = "Toque no seu nome, aqui em cima, para abrir o seu " +
+                            "perfil.",
+                    elementoAlvoId = "config_card_perfil"
+                ),
+                Passo(
+                    id = "wppvt_p4",
+                    instrucao = "Pronto! Aqui está o seu número de telefone. Toque " +
+                            "para finalizar.",
+                    elementoAlvoId = "perfil_telefone"
                 )
             )
         ),

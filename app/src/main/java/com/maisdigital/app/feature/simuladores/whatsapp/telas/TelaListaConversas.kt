@@ -62,6 +62,7 @@ import androidx.compose.foundation.layout.windowInsetsPadding
  */
 @Composable
 fun TelaListaConversas(
+    menuPrincipalAberto: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize().background(Color.White)) {
@@ -230,6 +231,16 @@ fun TelaListaConversas(
                 modifier = Modifier.size(28.dp)
             )
         }
+
+        // Menu suspenso dos 3 pontinhos (controlado por menuPrincipalAberto)
+        if (menuPrincipalAberto) {
+            MenuPrincipal(
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .align(Alignment.TopEnd)
+                    .padding(top = 50.dp, end = 4.dp)
+            )
+        }
     }
 }
 
@@ -370,6 +381,53 @@ private fun AbaInferior(
             text = texto,
             style = MaterialTheme.typography.bodySmall,
             color = if (selecionado) Color(0xFF075E54) else CinzaIconePequeno
+        )
+    }
+}
+
+/**
+ * Menu suspenso que abre ao tocar nos 3 pontinhos do header.
+ * Usado pela aula "Ver seu próprio número de telefone".
+ * O único item com alvo é 'Configurações' (menu_principal_configuracoes),
+ * que leva à tela de Configurações. Os outros são decorativos.
+ */
+@Composable
+private fun MenuPrincipal(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .width(240.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color.White)
+            .padding(vertical = Dimensoes.espacoPequeno)
+    ) {
+        ItemMenuPrincipal(texto = "Novo grupo")
+        ItemMenuPrincipal(texto = "Nova comunidade")
+        ItemMenuPrincipal(texto = "Listas de transmissão")
+        ItemMenuPrincipal(texto = "Dispositivos conectados")
+        ItemMenuPrincipal(texto = "Favoritas")
+        ItemMenuPrincipal(texto = "Marcar tudo como lido")
+        ItemMenuPrincipal(texto = "Pagamentos")
+        ItemMenuPrincipal(
+            texto = "Configurações",
+            modifier = Modifier.alvoTutorial("menu_principal_configuracoes")
+        )
+    }
+}
+
+@Composable
+private fun ItemMenuPrincipal(
+    texto: String,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimensoes.espacoMedio, vertical = Dimensoes.espacoMedio)
+    ) {
+        Text(
+            text = texto,
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

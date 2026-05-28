@@ -11,12 +11,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.maisdigital.app.domain.tutorial.LocalTutorialEngine
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaChamadaVideoAtiva
+import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaConfiguracoes
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaContatos
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaConversa
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaGaleriaMidia
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaInfoContato
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaListaConversas
 import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaNovoContato
+import com.maisdigital.app.feature.simuladores.whatsapp.telas.TelaPerfil
 
 /**
  * Estado completo do simulador WhatsApp.
@@ -30,6 +32,7 @@ private data class EstadoSim(
     val audiosEnviados: Int = 0,
     val menuConversaAberto: Boolean = false,
     val abaGaleria: String = "midia",
+    val menuPrincipalAberto: Boolean = false,
 
     // Novo contato
     val nomeContatoDigitado: String = "",
@@ -89,7 +92,10 @@ fun SimuladorWhatsApp(
     val telaAtual = telaParaPasso(passoAtualId)
 
     when (telaAtual) {
-        TelaSimulada.LISTA_CONVERSAS -> TelaListaConversas(modifier.fillMaxSize())
+        TelaSimulada.LISTA_CONVERSAS -> TelaListaConversas(
+            menuPrincipalAberto = estado.menuPrincipalAberto,
+            modifier = modifier.fillMaxSize()
+        )
         TelaSimulada.CONTATOS        -> TelaContatos(modifier.fillMaxSize())
         TelaSimulada.NOVO_CONTATO    -> TelaNovoContato(
             nomeDigitado = estado.nomeContatoDigitado,
@@ -109,6 +115,8 @@ fun SimuladorWhatsApp(
             abaAtiva = estado.abaGaleria,
             modifier = modifier.fillMaxSize()
         )
+        TelaSimulada.CONFIGURACOES   -> TelaConfiguracoes(modifier.fillMaxSize())
+        TelaSimulada.PERFIL          -> TelaPerfil(modifier.fillMaxSize())
         TelaSimulada.CHAMADA_VIDEO   -> TelaChamadaVideoAtiva(
             cameraDesligada = estado.cameraDesligada,
             microfoneSilenciado = estado.microfoneSilenciado,
@@ -155,6 +163,11 @@ private fun aplicarAcaoAoConfirmarPasso(atual: EstadoSim, passoId: String): Esta
         "galeria_aba_docs"         -> atual.copy(abaGaleria = "docs")
         "galeria_aba_links"        -> atual.copy(abaGaleria = "links")
 
+        // ----- Aula 7: tocar nos 3 pontinhos da lista abre o menu principal
+        "btn_menu_principal"       -> atual.copy(menuPrincipalAberto = true)
+        // Tocar em "Configurações" fecha o menu (já vai pra tela de config)
+        "menu_principal_configuracoes" -> atual.copy(menuPrincipalAberto = false)
+
         // Selecionar "Compartilhar tela" → abre diálogo
         "opcao_compartilhar_tela"  -> atual.copy(menuAberto = false, dialogCompartilharAberto = true)
 
@@ -192,6 +205,8 @@ private enum class TelaSimulada {
     CONVERSA,
     INFO_CONTATO,
     GALERIA_MIDIA,
+    CONFIGURACOES,
+    PERFIL,
     CHAMADA_VIDEO
 }
 
@@ -201,7 +216,19 @@ private enum class TelaSimulada {
 private fun telaParaPasso(passoAtualId: String): TelaSimulada {
     return when (passoAtualId) {
         "btn_nova_conversa",
-        "conversa_pedro"           -> TelaSimulada.LISTA_CONVERSAS
+        "conversa_pedro",
+            // Aula 7: menu de 3 pontinhos da tela principal
+        "btn_menu_principal",
+        "menu_principal_configuracoes",
+            // (alvos de reconhecimento da aula 1 — todos na lista)
+        "barra_busca",
+        "filtro_todas",
+        "filtro_nao_lidas",
+        "filtro_favoritos",
+        "filtro_grupos",
+        "aba_conversas",
+        "aba_atualizacoes",
+        "aba_ligacoes"             -> TelaSimulada.LISTA_CONVERSAS
 
         "btn_novo_contato"         -> TelaSimulada.CONTATOS
 
@@ -241,6 +268,14 @@ private fun telaParaPasso(passoAtualId: String): TelaSimulada {
         "galeria_aba_midia",
         "galeria_aba_docs",
         "galeria_aba_links"        -> TelaSimulada.GALERIA_MIDIA
+
+        // Aula 7: tela de Configurações
+        "config_voltar",
+        "config_card_perfil"       -> TelaSimulada.CONFIGURACOES
+
+        // Aula 7: tela de Perfil (próprio número)
+        "perfil_voltar",
+        "perfil_telefone"          -> TelaSimulada.PERFIL
 
         // Chamada: btn_microfone_chamada é o de silenciar
         "btn_minimizar_chamada",
@@ -315,6 +350,12 @@ private fun aplicarAcaoAoEntrarNoPasso(atual: EstadoSim, passoId: String): Estad
         // ----- Aula 6 (mídia, links e docs) -----
         // Ao apontar a aba Mídia, a galeria começa nela
         "galeria_aba_midia"      -> atual.copy(abaGaleria = "midia")
+
+        // ----- Aula 7 (ver próprio número) -----
+        // Tocar nos 3 pontinhos da lista: o menu NÃO pode estar aberto ainda
+        "btn_menu_principal"     -> atual.copy(menuPrincipalAberto = false)
+        // Tocar em "Configurações" no menu: o menu PRECISA estar aberto
+        "menu_principal_configuracoes" -> atual.copy(menuPrincipalAberto = true)
 
         // ----- Aulas de chamada -----
         // Volta ao estado padrão da chamada quando o passo é apenas iniciar
