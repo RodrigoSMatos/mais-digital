@@ -82,228 +82,308 @@ private val CinzaIcone = Color(0xFF667781)
 
 @Composable
 fun TelaInfoContato(
+    dialogBloquearAberto: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(Color.White)
-            .verticalScroll(rememberScrollState())
-    ) {
-        // Topo: voltar + QR code + 3 pontinhos
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+    Box(modifier = modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .windowInsetsPadding(WindowInsets.statusBars)
-                .height(56.dp)
-                .padding(horizontal = Dimensoes.espacoMedio)
+                .fillMaxSize()
+                .background(Color.White)
+                .verticalScroll(rememberScrollState())
         ) {
-            Box(
-                contentAlignment = Alignment.Center,
+            // Topo: voltar + QR code + 3 pontinhos
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
-                    .size(40.dp)
-                    .alvoTutorial("info_voltar")
+                    .fillMaxWidth()
+                    .windowInsetsPadding(WindowInsets.statusBars)
+                    .height(56.dp)
+                    .padding(horizontal = Dimensoes.espacoMedio)
             ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .alvoTutorial("info_voltar")
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Voltar",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Voltar",
+                    imageVector = Icons.Filled.QrCode,
+                    contentDescription = "Código QR",
                     tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(26.dp)
+                )
+                Spacer(modifier = Modifier.width(Dimensoes.espacoMedio))
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = "Mais opções",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(26.dp)
                 )
             }
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(
-                imageVector = Icons.Filled.QrCode,
-                contentDescription = "Código QR",
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(26.dp)
-            )
-            Spacer(modifier = Modifier.width(Dimensoes.espacoMedio))
-            Icon(
-                imageVector = Icons.Filled.MoreVert,
-                contentDescription = "Mais opções",
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(26.dp)
-            )
-        }
 
-        Spacer(modifier = Modifier.height(Dimensoes.espacoMedio))
+            Spacer(modifier = Modifier.height(Dimensoes.espacoMedio))
 
-        // Avatar grande
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .size(120.dp)
-                .clip(CircleShape)
-                .background(VerdePedro)
-                .alvoTutorial("info_avatar"),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "P",
-                style = MaterialTheme.typography.displayMedium,
-                color = Color.White
-            )
-        }
-
-        Spacer(modifier = Modifier.height(Dimensoes.espacoMedio))
-
-        // Nome
-        Text(
-            text = "Pedro Borba",
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onSurface,
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .alvoTutorial("info_nome")
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        // Número
-        Text(
-            text = "+55 11 99999-0000",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // 4 botões de ação
-        Row(
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Dimensoes.espacoMedio)
-        ) {
-            BotaoAcao(
-                icone = Icons.Filled.Chat,
-                texto = "Mensagem",
-                modifier = Modifier.alvoTutorial("info_btn_mensagem")
-            )
-            BotaoAcao(
-                icone = Icons.Filled.Call,
-                texto = "Ligar",
-                modifier = Modifier.alvoTutorial("info_btn_ligar")
-            )
-            BotaoAcao(
-                icone = Icons.Filled.Videocam,
-                texto = "Vídeo",
-                modifier = Modifier.alvoTutorial("info_btn_video")
-            )
-            BotaoAcao(
-                icone = Icons.Filled.Search,
-                texto = "Buscar",
-                modifier = Modifier.alvoTutorial("info_btn_buscar")
-            )
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-        Divisor()
-
-        // Seção Mídia, links e docs
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(Dimensoes.espacoMedio)
-                .alvoTutorial("info_midia")
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
+            // Avatar grande
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(VerdePedro)
+                    .alvoTutorial("info_avatar"),
+                contentAlignment = Alignment.Center
+            ) {
                 Text(
-                    text = "Mídia, links e docs",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    text = "P",
+                    style = MaterialTheme.typography.displayMedium,
+                    color = Color.White
                 )
             }
+
+            Spacer(modifier = Modifier.height(Dimensoes.espacoMedio))
+
+            // Nome
             Text(
-                text = "17  >",
+                text = "Pedro Borba",
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .alvoTutorial("info_nome")
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Número
+            Text(
+                text = "+55 11 99999-0000",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // 4 botões de ação
+            Row(
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Dimensoes.espacoMedio)
+            ) {
+                BotaoAcao(
+                    icone = Icons.Filled.Chat,
+                    texto = "Mensagem",
+                    modifier = Modifier.alvoTutorial("info_btn_mensagem")
+                )
+                BotaoAcao(
+                    icone = Icons.Filled.Call,
+                    texto = "Ligar",
+                    modifier = Modifier.alvoTutorial("info_btn_ligar")
+                )
+                BotaoAcao(
+                    icone = Icons.Filled.Videocam,
+                    texto = "Vídeo",
+                    modifier = Modifier.alvoTutorial("info_btn_video")
+                )
+                BotaoAcao(
+                    icone = Icons.Filled.Search,
+                    texto = "Buscar",
+                    modifier = Modifier.alvoTutorial("info_btn_buscar")
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            Divisor()
+
+            // Seção Mídia, links e docs
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(Dimensoes.espacoMedio)
+                    .alvoTutorial("info_midia")
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Mídia, links e docs",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                Text(
+                    text = "17  >",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            // Miniaturas de mídia (decorativas)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(Dimensoes.espacoPequeno),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = Dimensoes.espacoMedio)
+            ) {
+                repeat(4) { indice ->
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(80.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(
+                                listOf(
+                                    Color(0xFFB0BEC5),
+                                    Color(0xFFCFD8DC),
+                                    Color(0xFF90A4AE),
+                                    Color(0xFFB0BEC5)
+                                )[indice]
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Photo,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(Dimensoes.espacoMedio))
+            Divisor()
+
+            // Gerenciar armazenamento
+            ItemInfo(
+                icone = Icons.Filled.Folder,
+                titulo = "Gerenciar armazenamento",
+                subtitulo = "521,3 MB"
+            )
+
+            // Notificações (alvo)
+            ItemInfo(
+                icone = Icons.Filled.Notifications,
+                titulo = "Notificações",
+                subtitulo = "Todas",
+                modifier = Modifier.alvoTutorial("info_notificacoes")
+            )
+
+            // Visibilidade de mídia
+            ItemInfo(
+                icone = Icons.Filled.Photo,
+                titulo = "Visibilidade de mídia",
+                subtitulo = null
+            )
+
+            // Criptografia
+            ItemInfo(
+                icone = Icons.Filled.Lock,
+                titulo = "Criptografia",
+                subtitulo = "As mensagens e ligações são protegidas com criptografia de ponta a ponta."
+            )
+
+            Divisor()
+
+            // Bloquear (alvo) — texto em laranja (cor de alerta amigável do app)
+            ItemInfo(
+                icone = Icons.Filled.Block,
+                titulo = "Bloquear Pedro Borba",
+                subtitulo = null,
+                corDestaque = Color(0xFFE8730C),
+                modifier = Modifier.alvoTutorial("info_bloquear")
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Diálogo de confirmação de bloquear (sobrepõe a tela)
+        if (dialogBloquearAberto) {
+            DialogBloquearContato()
+        }
+    }
+}
+
+/**
+ * Diálogo de confirmação que aparece ao tocar em 'Bloquear Pedro Borba'.
+ * Sobrepõe a tela com um fundo escurecido (igual o WhatsApp real).
+ *
+ * Alvos:
+ *  - "dialog_bloquear_cancelar"  → botão Cancelar
+ *  - "dialog_bloquear_confirmar" → botão Bloquear (confirma o bloqueio)
+ */
+@Composable
+private fun DialogBloquearContato() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0x99000000)),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color.White)
+                .padding(24.dp)
+        ) {
+            Text(
+                text = "Bloquear Pedro Borba?",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Spacer(modifier = Modifier.height(Dimensoes.espacoMedio))
+            Text(
+                text = "A pessoa bloqueada não poderá ligar nem mandar " +
+                        "mensagens para você.",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-        }
-
-        // Miniaturas de mídia (decorativas)
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(Dimensoes.espacoPequeno),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = Dimensoes.espacoMedio)
-        ) {
-            repeat(4) { indice ->
+            Spacer(modifier = Modifier.height(24.dp))
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Box(
                     modifier = Modifier
-                        .weight(1f)
-                        .height(80.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(
-                            listOf(
-                                Color(0xFFB0BEC5),
-                                Color(0xFFCFD8DC),
-                                Color(0xFF90A4AE),
-                                Color(0xFFB0BEC5)
-                            )[indice]
-                        ),
-                    contentAlignment = Alignment.Center
+                        .padding(horizontal = Dimensoes.espacoMedio,
+                            vertical = Dimensoes.espacoPequeno)
+                        .alvoTutorial("dialog_bloquear_cancelar")
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Photo,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(28.dp)
+                    Text(
+                        text = "Cancelar",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = VerdeWhatsApp
+                    )
+                }
+                Spacer(modifier = Modifier.width(Dimensoes.espacoMedio))
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .padding(horizontal = Dimensoes.espacoMedio,
+                            vertical = Dimensoes.espacoPequeno)
+                        .alvoTutorial("dialog_bloquear_confirmar")
+                ) {
+                    Text(
+                        text = "Bloquear",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color(0xFFE8730C)  // laranja
                     )
                 }
             }
         }
-
-        Spacer(modifier = Modifier.height(Dimensoes.espacoMedio))
-        Divisor()
-
-        // Gerenciar armazenamento
-        ItemInfo(
-            icone = Icons.Filled.Folder,
-            titulo = "Gerenciar armazenamento",
-            subtitulo = "521,3 MB"
-        )
-
-        // Notificações (alvo)
-        ItemInfo(
-            icone = Icons.Filled.Notifications,
-            titulo = "Notificações",
-            subtitulo = "Todas",
-            modifier = Modifier.alvoTutorial("info_notificacoes")
-        )
-
-        // Visibilidade de mídia
-        ItemInfo(
-            icone = Icons.Filled.Photo,
-            titulo = "Visibilidade de mídia",
-            subtitulo = null
-        )
-
-        // Criptografia
-        ItemInfo(
-            icone = Icons.Filled.Lock,
-            titulo = "Criptografia",
-            subtitulo = "As mensagens e ligações são protegidas com criptografia de ponta a ponta."
-        )
-
-        Divisor()
-
-        // Bloquear (alvo) — texto em laranja (cor de alerta amigável do app)
-        ItemInfo(
-            icone = Icons.Filled.Block,
-            titulo = "Bloquear Pedro Borba",
-            subtitulo = null,
-            corDestaque = Color(0xFFE8730C),
-            modifier = Modifier.alvoTutorial("info_bloquear")
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 

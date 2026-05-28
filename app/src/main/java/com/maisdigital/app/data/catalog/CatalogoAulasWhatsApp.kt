@@ -20,6 +20,7 @@ object CatalogoAulasWhatsApp {
     const val ID_INFO_CONTATO = "wpp_info_contato"
     const val ID_MIDIA_CONTATO = "wpp_midia_contato"
     const val ID_VER_TELEFONE = "wpp_ver_telefone"
+    const val ID_BLOQUEAR_CONTATO = "wpp_bloquear_contato"
     const val ID_AULA_4 = "wpp_aula_4"
     const val ID_AULA_5 = "wpp_aula_5"
     const val ID_AULA_6 = "wpp_aula_6"
@@ -381,6 +382,44 @@ object CatalogoAulasWhatsApp {
                     instrucao = "Pronto! Aqui está o seu número de telefone. Toque " +
                             "para finalizar.",
                     elementoAlvoId = "perfil_telefone"
+                )
+            )
+        ),
+
+        // ==================================================================
+        // AULA — Bloquear um contato
+        // ==================================================================
+        Aula(
+            id = ID_BLOQUEAR_CONTATO,
+            appId = CatalogoApps.ID_WHATSAPP,
+            ordem = 8,
+            titulo = "Bloquear um contato",
+            descricao = "Se alguém estiver te incomodando, você pode bloquear essa " +
+                    "pessoa. Ela não vai mais conseguir te ligar nem te mandar " +
+                    "mensagens. Nesta aula você vai aprender como bloquear.",
+            passos = listOf(
+                Passo(
+                    id = "wppbc_p1",
+                    instrucao = "Toque na conversa do Pedro para abri-la.",
+                    elementoAlvoId = "conversa_pedro"
+                ),
+                Passo(
+                    id = "wppbc_p2",
+                    instrucao = "Toque na foto do Pedro, no topo, para abrir as " +
+                            "informações.",
+                    elementoAlvoId = "conversa_foto_contato"
+                ),
+                Passo(
+                    id = "wppbc_p3",
+                    instrucao = "Role a tela até o final e toque em 'Bloquear Pedro " +
+                            "Borba'.",
+                    elementoAlvoId = "info_bloquear"
+                ),
+                Passo(
+                    id = "wppbc_p4",
+                    instrucao = "O celular pede confirmação. Toque em 'Bloquear' " +
+                            "para confirmar.",
+                    elementoAlvoId = "dialog_bloquear_confirmar"
                 )
             )
         ),

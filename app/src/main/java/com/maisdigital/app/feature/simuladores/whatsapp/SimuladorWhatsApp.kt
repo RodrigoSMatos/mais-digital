@@ -33,6 +33,7 @@ private data class EstadoSim(
     val menuConversaAberto: Boolean = false,
     val abaGaleria: String = "midia",
     val menuPrincipalAberto: Boolean = false,
+    val dialogBloquearAberto: Boolean = false,
 
     // Novo contato
     val nomeContatoDigitado: String = "",
@@ -110,7 +111,10 @@ fun SimuladorWhatsApp(
             menuConversaAberto = estado.menuConversaAberto,
             modifier = modifier.fillMaxSize()
         )
-        TelaSimulada.INFO_CONTATO    -> TelaInfoContato(modifier.fillMaxSize())
+        TelaSimulada.INFO_CONTATO    -> TelaInfoContato(
+            dialogBloquearAberto = estado.dialogBloquearAberto,
+            modifier = modifier.fillMaxSize()
+        )
         TelaSimulada.GALERIA_MIDIA   -> TelaGaleriaMidia(
             abaAtiva = estado.abaGaleria,
             modifier = modifier.fillMaxSize()
@@ -167,6 +171,12 @@ private fun aplicarAcaoAoConfirmarPasso(atual: EstadoSim, passoId: String): Esta
         "btn_menu_principal"       -> atual.copy(menuPrincipalAberto = true)
         // Tocar em "Configurações" fecha o menu (já vai pra tela de config)
         "menu_principal_configuracoes" -> atual.copy(menuPrincipalAberto = false)
+
+        // ----- Aula 8: tocar em "Bloquear" abre o diálogo de confirmação
+        "info_bloquear"            -> atual.copy(dialogBloquearAberto = true)
+        // Botões do diálogo fecham ele
+        "dialog_bloquear_cancelar",
+        "dialog_bloquear_confirmar" -> atual.copy(dialogBloquearAberto = false)
 
         // Selecionar "Compartilhar tela" → abre diálogo
         "opcao_compartilhar_tela"  -> atual.copy(menuAberto = false, dialogCompartilharAberto = true)
@@ -261,7 +271,10 @@ private fun telaParaPasso(passoAtualId: String): TelaSimulada {
         "info_btn_buscar",
         "info_midia",
         "info_notificacoes",
-        "info_bloquear"            -> TelaSimulada.INFO_CONTATO
+        "info_bloquear",
+            // Aula 8: diálogo de confirmação de bloquear
+        "dialog_bloquear_cancelar",
+        "dialog_bloquear_confirmar" -> TelaSimulada.INFO_CONTATO
 
         // Aula 6: galeria de mídia (abas Mídia/Docs/Links)
         "galeria_voltar",
@@ -356,6 +369,13 @@ private fun aplicarAcaoAoEntrarNoPasso(atual: EstadoSim, passoId: String): Estad
         "btn_menu_principal"     -> atual.copy(menuPrincipalAberto = false)
         // Tocar em "Configurações" no menu: o menu PRECISA estar aberto
         "menu_principal_configuracoes" -> atual.copy(menuPrincipalAberto = true)
+
+        // ----- Aula 8 (bloquear contato) -----
+        // Tocar em "Bloquear": o diálogo NÃO pode estar aberto ainda
+        "info_bloquear"          -> atual.copy(dialogBloquearAberto = false)
+        // Botões do diálogo: o diálogo PRECISA estar aberto
+        "dialog_bloquear_cancelar",
+        "dialog_bloquear_confirmar" -> atual.copy(dialogBloquearAberto = true)
 
         // ----- Aulas de chamada -----
         // Volta ao estado padrão da chamada quando o passo é apenas iniciar
