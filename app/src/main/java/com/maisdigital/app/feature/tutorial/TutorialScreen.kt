@@ -1,5 +1,6 @@
 package com.maisdigital.app.feature.tutorial
 
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,6 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.maisdigital.app.core.ui.components.shakeEm
 import com.maisdigital.app.domain.tutorial.LocalRegistroAlvos
@@ -35,6 +41,11 @@ fun TutorialScreen(
     aoConcluir: () -> Unit,
     viewModel: TutorialViewModel = viewModel()
 ) {
+    // Esconde a barra de navegação enquanto a tela do tutorial está ativa.
+    // O idoso ainda pode trazê-la de volta com swipe a partir da borda inferior.
+    // Quando sai da TutorialScreen (concluiu, abandonou), a barra reaparece.
+    EsconderBarraNavegacao()
+
     LaunchedEffect(appId, aulaId) {
         viewModel.carregarAula(appId, aulaId)
     }
@@ -127,6 +138,41 @@ fun TutorialScreen(
                         }
                 )
             }
+        }
+    }
+}
+/**
+ * Esconde a barra de navegação do Android (botões home/voltar/recentes)
+ * enquanto este composable estiver na composição. A barra reaparece com
+ * um swipe a partir da borda inferior — comportamento padrão de apps como
+ * YouTube em tela cheia.
+ *
+ * Quando o composable sai da composição (usuário saiu da TutorialScreen),
+ * a barra volta automaticamente ao estado normal.
+ *
+ * IMPORTANTE: não escondemos a status bar (relógio/bateria). Tirar ela
+ * pode confundir o idoso achando que perdeu sinal ou bateria.
+ */
+@Composable
+private fun EsconderBarraNavegacao() {
+    val view = LocalView.current
+    DisposableEffect(view) {
+        val window = (view.context as? Activity)?.window
+        if (window == null) {
+            return@DisposableEffect onDispose { }
+        }
+        val controller = WindowCompat.getInsetsController(window, view)
+        // Esconde apenas a barra de navegação (não a status bar)
+        controller.hide(WindowInsetsCompat.Type.navigationBars())
+        // Permite reaparecer temporariamente com swipe a partir da borda
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+
+        onDispose {
+            // Restaura a barra quando sai do tutorial
+            controller.show(WindowInsetsCompat.Type.navigationBars())
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
         }
     }
 }
