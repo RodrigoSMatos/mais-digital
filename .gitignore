@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Builds locais de release (APK/AAB/baselineProfiles)
+app/release/
+app/build/
