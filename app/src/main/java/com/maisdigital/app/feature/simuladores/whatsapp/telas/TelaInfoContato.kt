@@ -104,7 +104,7 @@ fun TelaInfoContato(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(48.dp)
                         .alvoTutorial("info_voltar")
                 ) {
                     Icon(
@@ -301,7 +301,7 @@ fun TelaInfoContato(
                 icone = Icons.Filled.Block,
                 titulo = "Bloquear Pedro Borba",
                 subtitulo = null,
-                corDestaque = Color(0xFFE8730C),
+                corDestaque = Color(0xFFC2410C),
                 modifier = Modifier.alvoTutorial("info_bloquear")
             )
 
@@ -379,7 +379,7 @@ private fun DialogBloquearContato() {
                     Text(
                         text = "Bloquear",
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color(0xFFE8730C)  // laranja
+                        color = Color(0xFFC2410C)  // laranja
                     )
                 }
             }

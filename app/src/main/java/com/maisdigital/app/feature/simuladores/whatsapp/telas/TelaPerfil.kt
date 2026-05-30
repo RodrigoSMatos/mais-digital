@@ -73,7 +73,7 @@ fun TelaPerfil(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(48.dp)
                     .alvoTutorial("perfil_voltar")
             ) {
                 Icon(

@@ -98,7 +98,7 @@ fun TelaListaConversas(
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .size(40.dp)
+                            .size(48.dp)
                             .alvoTutorial("btn_menu_principal")
                     ) {
                         Icon(
@@ -201,9 +201,9 @@ fun TelaListaConversas(
                     horario = "Ontem"
                 )
                 ItemConversa(
-                    inicial = "P",
+                    inicial = "R",
                     corAvatar = Color(0xFF4CAF50),
-                    nome = "Pedro",
+                    nome = "Roberto",
                     ultimaMensagem = "Obrigado!",
                     horario = "Ontem"
                 )

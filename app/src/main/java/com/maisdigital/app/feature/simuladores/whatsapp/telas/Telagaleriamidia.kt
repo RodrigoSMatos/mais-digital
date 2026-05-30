@@ -78,7 +78,7 @@ fun TelaGaleriaMidia(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(48.dp)
                     .alvoTutorial("galeria_voltar")
             ) {
                 Icon(

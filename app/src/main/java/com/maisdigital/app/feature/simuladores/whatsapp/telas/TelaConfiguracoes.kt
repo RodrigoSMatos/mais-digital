@@ -84,7 +84,7 @@ fun TelaConfiguracoes(
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(48.dp)
                     .alvoTutorial("config_voltar")
             ) {
                 Icon(

@@ -391,7 +391,7 @@ private fun BotaoAcaoDireita(
     ) {
         Icon(
             imageVector = if (textoDigitado.isNotEmpty()) Icons.Filled.Send else Icons.Filled.Mic,
-            contentDescription = null,
+            contentDescription = if (textoDigitado.isNotEmpty()) "Enviar mensagem" else "Gravar áudio",
             tint = Color.White,
             modifier = Modifier.size(24.dp)
         )
